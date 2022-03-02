@@ -40,9 +40,14 @@ const SecondaryText = styled('p')({
 	fontSize: 14,
 });
 
-const AccountItem: React.FC<Account> = (account) => {
+interface AccountItemProps {
+	account: Account;
+	handleChangeAccount: (account: Account) => void;
+}
+
+const AccountItem: React.FC<AccountItemProps> = ({ account, handleChangeAccount }) => {
 	return (
-		<ItemWrapper>
+		<ItemWrapper onClick={() => handleChangeAccount(account)}>
 			<Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: 0}}>
 				<PrimaryText>{account.accountName}</PrimaryText>
 				<TypeText>{account.type}</TypeText>

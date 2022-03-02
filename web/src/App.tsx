@@ -6,6 +6,7 @@ import { BankContainer } from "./components/BankContainer";
 import { CircularProgress, Grid } from "@mui/material";
 import Accounts from "./features/Accounts/Accounts";
 import { usePlayerService } from "./hooks/usePlayerService";
+import AccountDetails from "./features/Details/AccountDetails";
 
 
 debugData([
@@ -27,8 +28,8 @@ const App: React.FC = () => {
 							<Accounts/>
 						</React.Suspense>
 					</Grid>
-					<Grid item sm={7} md={8} lg={9} style={{ backgroundColor: 'red' }}>
-						<h1>Two</h1>
+					<Grid item sm={7} md={8} lg={9}>
+						<AccountDetails />
 					</Grid>
 				</Grid>
 			</BankContainer>

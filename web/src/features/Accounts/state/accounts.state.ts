@@ -2,6 +2,7 @@ import { atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } fro
 import { fetchNui } from "../../../utils/fetchNui";
 import { isEnvBrowser } from "../../../utils/misc";
 import { MockAccounts } from "../utils/constants";
+import { Account } from "../../../types/account";
 
 export const accountsState = {
 	accounts: atom<any[]>({
@@ -38,7 +39,7 @@ export const accountsState = {
 			return accounts.filter((acc) => acc.accountName.match(regExp));
 		},
 	}),
-	activeAccount: atom<any>({
+	activeAccount: atom<Account | null>({
 		key: 'defaultActiveAccount',
 		default: null,
 	}),
