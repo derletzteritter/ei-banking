@@ -13,7 +13,7 @@ export const accountsState = {
 				try {
 					const res: any = await fetchNui<{ data: any[] }>('ei-banking:getAccounts');
 					
-					return res.data;
+					return res;
 				} catch (e) {
 					if (isEnvBrowser()) {
 						return MockAccounts;

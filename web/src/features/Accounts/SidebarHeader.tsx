@@ -3,6 +3,7 @@ import { Box, Button, CircularProgress, styled } from "@mui/material";
 import { debugData } from "../../utils/debugData";
 import { useCredentialsValue } from "../../state/player.state";
 import { headerIcons } from "../../icons/svgProvider";
+import { useVisibilityAPI } from "../../hooks/useVisibilityAPI";
 
 const Header = styled(Box)({
 	marginTop: 20,
@@ -34,6 +35,7 @@ debugData([
 
 const SidebarHeader: React.FC = () => {
 	const player = useCredentialsValue();
+	const { exitNui } = useVisibilityAPI();
 	
 	if (!player) {
 		return <CircularProgress />
@@ -44,7 +46,7 @@ const SidebarHeader: React.FC = () => {
 			<PrimaryText>
 				{player.charName}
 			</PrimaryText>
-			<Button variant="contained" size="small" endIcon={headerIcons.exit}>
+			<Button onClick={exitNui} variant="contained" size="small" endIcon={headerIcons.exit}>
 				Logout
 			</Button>
 		</Header>

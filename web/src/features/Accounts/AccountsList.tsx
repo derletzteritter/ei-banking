@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { Account, AccountType } from "../../types/account";
 import AccountItem from "./components/AccountItem";
 
@@ -9,6 +9,12 @@ interface AccountsListProps {
 }
 
 const AccountsList: React.FC<AccountsListProps> = ({ accounts, handleChangeAccount }) => {
+	if (!accounts) {
+		return (
+			<CircularProgress />
+		)
+	}
+	
 	return (
 		<Box style={{
 			marginRight: 10,

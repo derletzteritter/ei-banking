@@ -12,6 +12,7 @@ export interface Account {
 	accountName: string;
 	type: AccountType;
 	balance: string;
+	owner: boolean;
 	isDefault: boolean;
 }
 
