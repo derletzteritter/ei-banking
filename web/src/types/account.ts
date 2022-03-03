@@ -13,8 +13,6 @@ export interface Account {
 	type: AccountType;
 	balance: string;
 	isDefault: boolean;
-	participants?: string[];
-	owner: boolean;
 }
 
 export interface DepositDTO {

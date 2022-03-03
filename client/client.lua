@@ -14,12 +14,16 @@ RegisterNUICallback('hideFrame', function(_, cb)
   cb({})
 end)
 
-RegisterNUICallback('getClientData', function(data, cb)
-  debugPrint('Data sent by React', json.encode(data))
+RegisterCommand('getaccounts', function()
+  TriggerServerEvent(EiBankingEvents.GetAccounts)
+end)
 
--- Lets send back client coords to the React frame for use
-  local curCoords = GetEntityCoords(PlayerPedId())
+AddEventHandler(EiBankingEvents.SendAccounts)
 
-  local retData <const> = { x = curCoords.x, y = curCoords.y, z = curCoords.z }
-  cb(retData)
+RegisterNUICallback(EiBankingEvents.GetAccounts, function(data, cb)
+  TriggerServerEvent(EiBankingEvents.GetAccounts)
+
+  RegisterNetEvent(EiBankingEvents.SendAccounts, function(accounts)
+    cb(accounts)
+  end)
 end)
