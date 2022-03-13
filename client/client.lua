@@ -23,3 +23,7 @@ RegisterNUICallback(EiBankingEvents.GetAccounts, function(data, cb)
     cb(accounts)
   end)
 end)
+
+RegisterNUICallback(EiBankingEvents.CreateAccount, function(data, cb)
+  TriggerServerEvent(EiBankingEvents.CreateAccount, data)
+end)
