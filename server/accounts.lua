@@ -81,6 +81,8 @@ AddEventHandler(EiBankingEvents.WithdrawMoney, function(withdraw)
 		MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, deposit.account.id })
 
 		player.Functions.AddMoney('cash', tonumber(withdraw.amount))
+
+		TriggerClientEvent(EiBankingEvents.WithdrawMoneySuccess, src, newBalance)
 	else
 		print("Not enough money")
 	end

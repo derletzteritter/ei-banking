@@ -41,6 +41,14 @@ RegisterNUICallback(EiBankingEvents.DepositMoney, function(data, cb)
 	end)
 end)
 
+RegisterNUICallback(EiBankingEvents.WithdrawMoney, function(data, cb)
+	TriggerServerEvent(EiBankingEvents.WithdrawMoney, data)
+
+	RegisterNetEvent(EiBankingEvents.WithdrawMoneySuccess, function(newBalance)
+		cb({ status = 'ok', data = newBalance })
+	end)
+end)
+
 RegisterNetEvent(EiBankingEvents.SyncDefaultAccountSuccess)
 AddEventHandler(EiBankingEvents.SyncDefaultAccountSuccess, function(balance)
 	SendReactMessage("SyncDefaultAccount", balance)

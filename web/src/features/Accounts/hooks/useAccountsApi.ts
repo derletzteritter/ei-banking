@@ -23,8 +23,20 @@ export const useAccountsApi = () => {
 		})
 	}
 	
+	const withdrawMoney = (account: Account, amount: string) => {
+		fetchNui('ei-banking:withdrawMoney', {
+			account,
+			amount: parseInt(amount, 10)
+		}).then((resp) => {
+			if (resp.status === 'ok') {
+				updateAccountBalance(account.id, resp.data)
+			}
+		})
+	}
+	
 	return {
 		createAccount,
-		depositMoney
+		depositMoney,
+		withdrawMoney
 	}
 }
