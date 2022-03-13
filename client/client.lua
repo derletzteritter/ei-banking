@@ -6,6 +6,7 @@ end
 RegisterCommand('show-nui', function()
 	toggleNuiFrame(true)
 	SendReactMessage('ei-banking:setCredentials', { charName = "Chip Chipperson" })
+	TriggerServerEvent(EiBankingEvents.SyncDefaultAccount)
 end)
 
 RegisterNUICallback('hideFrame', function(_, cb)
@@ -38,4 +39,9 @@ RegisterNUICallback(EiBankingEvents.DepositMoney, function(data, cb)
 	RegisterNetEvent(EiBankingEvents.DepositMoneySuccess, function(newBalance)
 		cb({ status = 'ok', data = newBalance })
 	end)
+end)
+
+RegisterNetEvent(EiBankingEvents.SyncDefaultAccountSuccess)
+AddEventHandler(EiBankingEvents.SyncDefaultAccountSuccess, function(balance)
+	SendReactMessage("SyncDefaultAccount", balance)
 end)

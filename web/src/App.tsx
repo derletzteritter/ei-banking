@@ -8,6 +8,7 @@ import Accounts from "./features/Accounts/Accounts";
 import { usePlayerService } from "./hooks/usePlayerService";
 import AccountDetails from "./features/Details/AccountDetails";
 import { useNuiEvent } from "./hooks/useNuiEvent";
+import { useAccountListener } from "./features/Accounts/hooks/useAccountListener";
 
 
 debugData([
@@ -21,6 +22,7 @@ const App: React.FC = () => {
 	const [visible, setVisible] = useState(false);
 	
 	usePlayerService();
+	useAccountListener();
 	
 	useNuiEvent('setVisible', (show) => {
 		setVisible(show);
