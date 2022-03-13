@@ -48,6 +48,7 @@ export const useAccountsActions = (): IUseAccountActions => {
 	}, [setAccounts])
 	
 	const updateAccountBalance = (accountId: string, newBalance: number) => {
+		// eslint-disable-next-line array-callback-return
 		setAccounts((curAcc: Account[]) => curAcc.map((acc) => {
 			if (acc.id === accountId) {
 				return {

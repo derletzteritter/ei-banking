@@ -51,7 +51,6 @@ AddEventHandler(EiBankingEvents.DepositMoney, function(deposit)
 		player.Functions.RemoveMoney('cash', tonumber(deposit.amount))
 
 		if (deposit.account.isDefault) then
-			print("is a default account")
 			player.Functions.AddMoney('bank', tonumber(deposit.amount))
 		end
 
@@ -62,6 +61,28 @@ AddEventHandler(EiBankingEvents.DepositMoney, function(deposit)
 		TriggerClientEvent(EiBankingEvents.DepositMoneySuccess, src, newBalance)
 	else
 		print("We do not have enough money")
+	end
+end)
+
+RegisterNetEvent(EiBankingEvents.WithdrawMoney)
+AddEventHandler(EiBankingEvents.WithdrawMoney, function(withdraw)
+	local src = source
+	local player = QBCore.Functions.GetPlayer(src)
+	local currentCash = player.PlayerData.money['cash']
+	local currentBank = player.PlayerData.money['bank']
+
+	if (amount <= currentBank) then
+		if (withdraw.account.isDefault) then
+			player.Functions.RemoveMoney('bank', tonumber(withdraw.amount))
+		end
+
+		local newBalance = tonumber(currentBank) - tonumber(withdraw.amount)
+
+		MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, deposit.account.id })
+
+		player.Functions.AddMoney('cash', tonumber(withdraw.amount))
+	else
+		print("Not enough money")
 	end
 end)
 
