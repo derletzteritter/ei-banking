@@ -12,3 +12,16 @@ RegisterNetEvent(EiBankingEvents.GetAccounts, function()
 			TriggerClientEvent(EiBankingEvents.SendAccounts, src, result)
 		end)
 end)
+
+AddEventHandler(EiBankingEvents.CreateAccount)
+RegisterNetEvent(EiBankingEvents.CreateAccount, function(accountData)
+	local src = source
+	local player = QBCore.Functions.GetPlayer(src)
+	local citizen_id = player.PlayerData.citizenid
+
+	-- Insert account
+	local insertId = MySQL.insert("INSERT INTO custom_bank_accounts (name, type, balance, is_default) VALUES (?, ?, ?, ?)", { accountData.name, "personal", 0, false })
+
+	-- Add member
+	MySQL.insert("INSERT INTO custom_bank_accounts_members (account_id, citizen_id) VALUES (?, ?)", { insertId, citizen_id })
+end)
