@@ -42,15 +42,38 @@ RegisterNetEvent(EiBankingEvents.DepositMoney)
 AddEventHandler(EiBankingEvents.DepositMoney, function(deposit)
 	local src = source
 	local player = QBCore.Functions.GetPlayer(src)
-	player.Functions.RemoveMoney('cash', deposit.amount)
+	local currentCash = player.PlayerData.money['cash']
+	local currentBank = player.PlayerData.money['bank']
 
-	if (deposit.account.isDefault) then
-		player.Functions.AddMoney('bank', deposit.amount)
+	if (currentCash >= deposit.amount) then -- If we have enough cash
+		print("We have enough money")
+
+		player.Functions.RemoveMoney('cash', tonumber(deposit.amount))
+
+		if (deposit.account.isDefault) then
+			print("is a default account")
+			player.Functions.AddMoney('bank', tonumber(deposit.amount))
+		end
+
+		local newBalance = tonumber(currentBank) + tonumber(deposit.amount)
+
+		MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, deposit.account.id })
+
+		TriggerClientEvent(EiBankingEvents.DepositMoneySuccess, src, newBalance)
+	else
+		print("We do not have enough money")
 	end
+end)
 
-	local newBalance = deposit.account.balance + deposit.amount
+RegisterNetEvent(EiBankingEvents.SyncDefaultAccount)
+AddEventHandler(EiBankingEvents.SyncDefaultAccount, function()
+	local src = source
+	player = QBCore.Functions.GetPlayer(src)
+	local citizenId = player.PlayerData.citizenid
 
-	MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, deposit.account.id })
+	local currentBank = player.PlayerData.money['bank']
 
-	TriggerClientEvent(EiBankingEvents.DepositMoneySuccess, src, newBalance)
+	MySQL.query.await("UPDATE custom_bank_accounts INNER JOIN custom_bank_accounts_members on custom_bank_accounts.id = custom_bank_accounts_members.account_id SET balance = ? WHERE is_default = 1 AND custom_bank_accounts_members.citizen_id = ?", { currentBank, citizenId })
+
+	TriggerClientEvent(EiBankingEvents.SyncDefaultAccountSuccess, src, currentBank)
 end)
