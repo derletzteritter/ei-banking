@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
-import { AccountAutocomplete } from "../../../components/AccountAutocomplete";
-import { useAccountsValue, useActiveAccountValue } from "../../Accounts/state/accounts.state";
+import { useActiveAccountValue } from "../../Accounts/state/accounts.state";
 
 interface DepositModalProps {
 	open: boolean;
 	onClose: () => void;
+	confirmDeposit: (amount: string) => void;
 }
 
-const DepositModal: React.FC<DepositModalProps> = ({ open, onClose }) => {
+const DepositModal: React.FC<DepositModalProps> = ({ open, onClose, confirmDeposit }) => {
 	const [amount, setAmount] = useState<string>('')
 	const activeAccount = useActiveAccountValue();
 	
@@ -34,7 +34,7 @@ const DepositModal: React.FC<DepositModalProps> = ({ open, onClose }) => {
 			</DialogContent>
 			<DialogActions>
 				<Button variant="outlined" onClick={onClose}>Cancel</Button>
-				<Button variant="contained" onClick={onClose} disabled={isDisabled}>Confirm</Button>
+				<Button variant="contained" onClick={() => confirmDeposit(amount)} disabled={isDisabled}>Confirm</Button>
 			</DialogActions>
 		</Dialog>
 	)

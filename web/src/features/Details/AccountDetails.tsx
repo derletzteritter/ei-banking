@@ -5,10 +5,12 @@ import { AccountBalance, AccountName } from "./styles/Details.styles";
 import { detailsIcons } from "../../icons/svgProvider";
 import DepositModal from "./components/DepositModal";
 import { useDepositModal } from "./state/modal.state";
+import { useAccountsApi } from "../Accounts/hooks/useAccountsApi";
 
 const AccountDetails: React.FC = () => {
 	const activeAccount = useActiveAccountValue();
 	const [depositModal, setDepositModal] = useDepositModal();
+	const { depositMoney } = useAccountsApi()
 	
 	if (!activeAccount) {
 		return <CircularProgress/>
@@ -22,9 +24,14 @@ const AccountDetails: React.FC = () => {
 		setDepositModal(false)
 	}
 	
+	const handleDepositModal = (amount: string) => {
+		depositMoney(activeAccount, amount)
+		closeDepositModal()
+	}
+	
 	return (
 		<Box ml={2}>
-			<DepositModal open={depositModal} onClose={closeDepositModal}/>
+			<DepositModal open={depositModal} onClose={closeDepositModal} confirmDeposit={handleDepositModal} />
 			<Box mt={2}>
 				<Stack direction="row" spacing={5}>
 					<Box>
@@ -35,7 +42,7 @@ const AccountDetails: React.FC = () => {
 						<Button endIcon={detailsIcons.cog} size="small" variant="contained">Settings</Button>
 					</Box>
 				</Stack>
-				<Stack mt={2} direction="row" spacing={2}>
+				<Stack mt={3.4} direction="row" spacing={2}>
 					<Button
 						onClick={openDepositModal}
 						style={{ backgroundColor: "#42464A" }}

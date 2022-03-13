@@ -1,5 +1,6 @@
 import { fetchNui } from "../../../utils/fetchNui";
 import { useAccountsActions } from "./useAccountsActions";
+import { Account } from "../../../types/account";
 
 export const useAccountsApi = () => {
 	const { createLocalAccount } = useAccountsActions();
@@ -11,7 +12,17 @@ export const useAccountsApi = () => {
 		})
 	}
 	
+	const depositMoney = (account: Account, amount: string) => {
+		fetchNui('ei-banking:depositMoney', {
+			account,
+			amount: parseInt(amount, 10)
+		}).then((resp) => {
+			console.log(resp)
+		})
+	}
+	
 	return {
-		createAccount
+		createAccount,
+		depositMoney
 	}
 }
