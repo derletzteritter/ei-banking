@@ -1,29 +1,33 @@
 local function toggleNuiFrame(shouldShow)
-  SetNuiFocus(shouldShow, shouldShow)
-  SendReactMessage('setVisible', shouldShow)
+	SetNuiFocus(shouldShow, shouldShow)
+	SendReactMessage('setVisible', shouldShow)
 end
 
 RegisterCommand('show-nui', function()
-  toggleNuiFrame(true)
-  SendReactMessage('ei-banking:setCredentials', { charName = "Chip Chipperson"})
+	toggleNuiFrame(true)
+	SendReactMessage('ei-banking:setCredentials', { charName = "Chip Chipperson" })
 end)
 
 RegisterNUICallback('hideFrame', function(_, cb)
-  toggleNuiFrame(false)
-  debugPrint('Hide NUI frame')
-  cb({})
+	toggleNuiFrame(false)
+	debugPrint('Hide NUI frame')
+	cb({})
 end)
 
 AddEventHandler(EiBankingEvents.SendAccounts)
 
 RegisterNUICallback(EiBankingEvents.GetAccounts, function(data, cb)
-  TriggerServerEvent(EiBankingEvents.GetAccounts)
+	TriggerServerEvent(EiBankingEvents.GetAccounts)
 
-  RegisterNetEvent(EiBankingEvents.SendAccounts, function(accounts)
-    cb(accounts)
-  end)
+	RegisterNetEvent(EiBankingEvents.SendAccounts, function(accounts)
+		cb(accounts)
+	end)
 end)
 
 RegisterNUICallback(EiBankingEvents.CreateAccount, function(data, cb)
-  TriggerServerEvent(EiBankingEvents.CreateAccount, data)
+	TriggerServerEvent(EiBankingEvents.CreateAccount, data)
+
+	RegisterNetEvent(EiBankingEvents.CreateAccountSuccess, function(account)
+		cb(account)
+	end)
 end)

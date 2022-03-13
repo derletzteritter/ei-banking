@@ -1,13 +1,17 @@
 import { useRecoilCallback } from 'recoil';
-import { accountsState } from "../state/accounts.state";
+import { accountsState, useSetAccounts } from "../state/accounts.state";
 import { Account } from "../../../types/account";
+import { useCallback } from "react";
 
 interface IUseAccountActions {
 	findAccountById: (id: string) => Account | null;
 	getDefaultAccount: () => Account;
+	createLocalAccount: (account: Account) => void;
 }
 
 export const useAccountsActions = (): IUseAccountActions => {
+	const setAccounts = useSetAccounts();
+	
 	const findAccountById = useRecoilCallback<[string], Account | null>(
 		({ snapshot }) =>
 			(id: string) => {
@@ -38,5 +42,9 @@ export const useAccountsActions = (): IUseAccountActions => {
 		[],
 	);
 	
-	return { findAccountById, getDefaultAccount };
+	const createLocalAccount = useCallback((account: Account) => {
+		setAccounts((curAcc) => [...curAcc, account])
+	}, [setAccounts])
+	
+	return { findAccountById, getDefaultAccount, createLocalAccount };
 };
