@@ -13,3 +13,8 @@ body {
 #root {
   height: 100%;
 }
+
+
+button.MuiButtonBase-root.MuiIconButton-root.MuiIconButton-sizeMedium.MuiAutocomplete-popupIndicator {
+  color: #fff;
+}

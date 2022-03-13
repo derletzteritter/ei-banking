@@ -17,6 +17,8 @@ const NewAccountModal: React.FC<NewAccountModalProps> = ({ open, onClose }) => {
 		onClose()
 	}
 	
+	const isDisabled = !accountName;
+	
 	return (
 		<Dialog open={open} fullWidth={true} maxWidth="sm" onClose={onClose}>
 			<DialogTitle>Create new account</DialogTitle>
@@ -36,7 +38,7 @@ const NewAccountModal: React.FC<NewAccountModalProps> = ({ open, onClose }) => {
 			</DialogContent>
 			<DialogActions>
 				<Button variant="outlined" onClick={onClose}>Cancel</Button>
-				<Button variant="contained" onClick={handleCreateAccount}>Confirm</Button>
+				<Button variant="contained" disabled={isDisabled} onClick={handleCreateAccount}>Confirm</Button>
 			</DialogActions>
 		</Dialog>
 	)
