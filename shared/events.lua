@@ -3,5 +3,6 @@ EiBankingEvents = {
 	SendAccounts = "ei-banking:sendAccounts",
 	CreateAccount = "ei-banking:createAccount",
 	CreateAccountSuccess = "ei-banking:createAccountSuccess",
-	DepositMoney = 'ei-banking:depositMoney'
+	DepositMoney = 'ei-banking:depositMoney',
+	DepositMoneySuccess = 'ei-banking:depositMoneySuccess'
 }

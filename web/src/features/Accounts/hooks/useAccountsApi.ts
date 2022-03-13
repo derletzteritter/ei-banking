@@ -3,7 +3,7 @@ import { useAccountsActions } from "./useAccountsActions";
 import { Account } from "../../../types/account";
 
 export const useAccountsApi = () => {
-	const { createLocalAccount } = useAccountsActions();
+	const { createLocalAccount, updateAccountBalance } = useAccountsActions();
 	
 	const createAccount = (name: string) => {
 		fetchNui('ei-banking:createAccount', { name }).then((res) => {
@@ -17,7 +17,9 @@ export const useAccountsApi = () => {
 			account,
 			amount: parseInt(amount, 10)
 		}).then((resp) => {
-			console.log(resp)
+			if (resp.status === 'ok') {
+				updateAccountBalance(account.id, resp.data)
+			}
 		})
 	}
 	

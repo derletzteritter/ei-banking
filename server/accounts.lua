@@ -37,3 +37,20 @@ RegisterNetEvent(EiBankingEvents.CreateAccount, function(accountData)
 		end)
 	end)
 end)
+
+RegisterNetEvent(EiBankingEvents.DepositMoney)
+AddEventHandler(EiBankingEvents.DepositMoney, function(deposit)
+	local src = source
+	local player = QBCore.Functions.GetPlayer(src)
+	player.Functions.RemoveMoney('cash', deposit.amount)
+
+	if (deposit.account.isDefault) then
+		player.Functions.AddMoney('bank', deposit.amount)
+	end
+
+	local newBalance = deposit.account.balance + deposit.amount
+
+	MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, deposit.account.id })
+
+	TriggerClientEvent(EiBankingEvents.DepositMoneySuccess, src, newBalance)
+end)

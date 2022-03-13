@@ -31,3 +31,11 @@ RegisterNUICallback(EiBankingEvents.CreateAccount, function(data, cb)
 		cb(account)
 	end)
 end)
+
+RegisterNUICallback(EiBankingEvents.DepositMoney, function(data, cb)
+	TriggerServerEvent(EiBankingEvents.DepositMoney, data)
+
+	RegisterNetEvent(EiBankingEvents.DepositMoneySuccess, function(newBalance)
+		cb({ status = 'ok', data = newBalance })
+	end)
+end)
