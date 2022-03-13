@@ -5,17 +5,13 @@ end
 
 RegisterCommand('show-nui', function()
   toggleNuiFrame(true)
-  debugPrint('Show NUI frame')
+  SendReactMessage('ei-banking:setCredentials', { charName = "Chip Chipperson"})
 end)
 
 RegisterNUICallback('hideFrame', function(_, cb)
   toggleNuiFrame(false)
   debugPrint('Hide NUI frame')
   cb({})
-end)
-
-RegisterCommand('getaccounts', function()
-  TriggerServerEvent(EiBankingEvents.GetAccounts)
 end)
 
 AddEventHandler(EiBankingEvents.SendAccounts)
