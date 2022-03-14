@@ -71,18 +71,21 @@ AddEventHandler(EiBankingEvents.WithdrawMoney, function(withdraw)
 	local currentCash = player.PlayerData.money['cash']
 	local currentBank = player.PlayerData.money['bank']
 
-	if (amount <= currentBank) then
+	if (withdraw.amount <= currentBank) then
 		if (withdraw.account.isDefault) then
 			player.Functions.RemoveMoney('bank', tonumber(withdraw.amount))
+
+			local newBalance = tonumber(currentBank) - tonumber(withdraw.amount)
+
+			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, withdraw.account.id })
+
+			player.Functions.AddMoney('cash', tonumber(withdraw.amount))
+
+			TriggerClientEvent(EiBankingEvents.WithdrawMoneySuccess, src, newBalance)
+		else
+			-- remove money
 		end
 
-		local newBalance = tonumber(currentBank) - tonumber(withdraw.amount)
-
-		MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, deposit.account.id })
-
-		player.Functions.AddMoney('cash', tonumber(withdraw.amount))
-
-		TriggerClientEvent(EiBankingEvents.WithdrawMoneySuccess, src, newBalance)
 	else
 		print("Not enough money")
 	end
@@ -96,7 +99,7 @@ AddEventHandler(EiBankingEvents.SyncDefaultAccount, function()
 
 	local currentBank = player.PlayerData.money['bank']
 
-	MySQL.query.await("UPDATE custom_bank_accounts INNER JOIN custom_bank_accounts_members on custom_bank_accounts.id = custom_bank_accounts_members.account_id SET balance = ? WHERE is_default = 1 AND custom_bank_accounts_members.citizen_id = ?", { currentBank, citizenId })
+	MySQL.query.await("UPDATE custom_bank_accounts INNER JOIN custom_bank_accounts_members on custom_bank_accounts.id = custom_bank_accounts_members.account_id SET balance = ? WHERE custom_bank_accounts.is_default = 1 AND custom_bank_accounts_members.citizen_id = ?", { currentBank, citizenId })
 
 	TriggerClientEvent(EiBankingEvents.SyncDefaultAccountSuccess, src, currentBank)
 end)
