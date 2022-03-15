@@ -14,6 +14,8 @@ export const useAccountListener = () => {
 					balance: newBalance
 				}
 			}
+			
+			return acc;
 		}))
 	})
 }
