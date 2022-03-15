@@ -7,7 +7,7 @@ interface IUseAccountActions {
 	findAccountById: (id: string) => Account | null;
 	getDefaultAccount: () => Account;
 	createLocalAccount: (account: Account) => void;
-	updateAccountBalance: (accountId: string, newBalance: number) => void;
+	updateAccountBalance: (accountId: number, newBalance: number) => void;
 }
 
 export const useAccountsActions = (): IUseAccountActions => {
@@ -39,6 +39,8 @@ export const useAccountsActions = (): IUseAccountActions => {
 				for (const account of contents) {
 					if (account.isDefault) return account;
 				}
+				
+				return null
 			},
 		[],
 	);
@@ -47,8 +49,7 @@ export const useAccountsActions = (): IUseAccountActions => {
 		setAccounts((curAcc) => [...curAcc, account])
 	}, [setAccounts])
 	
-	const updateAccountBalance = (accountId: string, newBalance: number) => {
-		// eslint-disable-next-line array-callback-return
+	const updateAccountBalance = (accountId: number, newBalance: number) => {
 		setAccounts((curAcc: Account[]) => curAcc.map((acc) => {
 			if (acc.id === accountId) {
 				return {
@@ -56,6 +57,8 @@ export const useAccountsActions = (): IUseAccountActions => {
 					balance: newBalance
 				}
 			}
+			
+			return acc;
 		}))
 	}
 	

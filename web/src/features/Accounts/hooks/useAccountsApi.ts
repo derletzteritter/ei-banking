@@ -1,6 +1,6 @@
 import { fetchNui } from "../../../utils/fetchNui";
-import { useAccountsActions } from "./useAccountsActions";
 import { Account } from "../../../types/account";
+import { useAccountsActions } from "./useAccountsActions";
 
 export const useAccountsApi = () => {
 	const { createLocalAccount, updateAccountBalance } = useAccountsActions();
@@ -23,7 +23,7 @@ export const useAccountsApi = () => {
 		})
 	}
 	
-	const withdrawMoney = (account: Account, amount: string) => {
+	const withdrawMoney = async (account: Account, amount: string) => {
 		fetchNui('ei-banking:withdrawMoney', {
 			account,
 			amount: parseInt(amount, 10)

@@ -8,7 +8,7 @@ export type PreDBAccount = {
 };
 
 export interface Account {
-	id: string;
+	id: number;
 	accountName: string;
 	type: AccountType;
 	balance: string;

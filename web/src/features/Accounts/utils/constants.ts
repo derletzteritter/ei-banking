@@ -2,7 +2,7 @@ import { Account, AccountType } from "../../../types/account";
 
 export const MockAccounts: Account[] = [
 	{
-		id: 'sdjafi8weyw',
+		id: 1,
 		accountName: 'Default account',
 		balance: '45.00',
 		owner: true,
@@ -10,7 +10,7 @@ export const MockAccounts: Account[] = [
 		type: AccountType.Personal,
 	},
 	{
-		id: 'iwfiw99e08fwe',
+		id: 2,
 		accountName: 'Savings',
 		balance: '9654.00',
 		owner: true,
@@ -18,7 +18,7 @@ export const MockAccounts: Account[] = [
 		type: AccountType.Personal,
 	},
 	{
-		id: '0iweif9i9wue',
+		id: 3,
 		accountName: 'google_was_my_idea',
 		balance: '0.00',
 		owner: false,

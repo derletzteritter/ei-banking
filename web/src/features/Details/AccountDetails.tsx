@@ -39,7 +39,7 @@ const AccountDetails: React.FC = () => {
 		closeDepositModal()
 	}
 	
-	const handleWithdrawModal = (amount: string) => {
+	const handleWithdrawModal = async (amount: string) => {
 		withdrawMoney(activeAccount, amount)
 		closeWithdrawModal();
 	}

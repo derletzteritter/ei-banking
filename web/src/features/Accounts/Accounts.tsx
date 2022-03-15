@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import AccountsSearch from "./components/AccountsSearch";
 import { useFilteredAccountsValue, useSetActiveAccount } from "./state/accounts.state";
 import AccountsList from "./AccountsList";
@@ -34,11 +34,13 @@ const Accounts: React.FC = () => {
 	
 	return (
 		<Box>
-			<NewAccountModal open={newAccountModal} onClose={toggleAccountModal} />
-			<SidebarHeader />
-			<NewAccountButton onClick={toggleAccountModal} />
-			<AccountsSearch/>
-			<AccountsList accounts={accounts} handleChangeAccount={handleChangeAccounts} />
+			<React.Suspense fallback={<CircularProgress />}>
+				<NewAccountModal open={newAccountModal} onClose={toggleAccountModal} />
+				<SidebarHeader />
+				<NewAccountButton onClick={toggleAccountModal} />
+				<AccountsSearch/>
+				<AccountsList accounts={accounts} handleChangeAccount={handleChangeAccounts} />
+			</React.Suspense>
 		</Box>
 	)
 }
