@@ -8,5 +8,7 @@ EiBankingEvents = {
 	WithdrawMoney = 'ei-banking:withdrawMoney',
 	WithdrawMoneySuccess = 'ei-banking:withdrawMoneySuccess',
 	SyncDefaultAccount = 'ei-banking:syncDefaultAccount',
-	SyncDefaultAccountSuccess = 'ei-banking:syncDefaultAccountSuccess'
+	SyncDefaultAccountSuccess = 'ei-banking:syncDefaultAccountSuccess',
+	TransferMoney = 'ei-banking:transferMoney',
+	TransferMoneySuccess = 'ei-banking:transferMoneySuccess'
 }

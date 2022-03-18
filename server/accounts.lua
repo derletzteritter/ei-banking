@@ -117,3 +117,14 @@ AddEventHandler(EiBankingEvents.SyncDefaultAccount, function()
 
 	TriggerClientEvent(EiBankingEvents.SyncDefaultAccountSuccess, src, currentBank)
 end)
+
+RegisterNetEvent(EiBankingEvents.TransferMoney)
+AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
+	local src = source
+	player = QBCore.Functions.GetPlayer(src)
+	local citizenId = player.PlayerData.citizenid
+end)
+
+
+
+
