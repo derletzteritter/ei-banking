@@ -23,7 +23,7 @@ export const useAccountsApi = () => {
 		})
 	}
 	
-	const withdrawMoney = async (account: Account, amount: string) => {
+	const withdrawMoney = (account: Account, amount: string) => {
 		fetchNui('ei-banking:withdrawMoney', {
 			account,
 			amount: parseInt(amount, 10)

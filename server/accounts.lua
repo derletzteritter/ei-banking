@@ -45,20 +45,29 @@ AddEventHandler(EiBankingEvents.DepositMoney, function(deposit)
 	local currentCash = player.PlayerData.money['cash']
 	local currentBank = player.PlayerData.money['bank']
 
-	if (currentCash >= deposit.amount) then -- If we have enough cash
-		print("We have enough money")
+	if currentCash >= deposit.amount then
+		-- If we have enough cash
+		if deposit.account.isDefault == true then
+			print("We have enough money")
+			local newBalance = tonumber(currentBank) + tonumber(deposit.amount)
+			player.Functions.RemoveMoney('cash', tonumber(deposit.amount))
 
-		player.Functions.RemoveMoney('cash', tonumber(deposit.amount))
+			if (deposit.account.isDefault) then
+				player.Functions.AddMoney('bank', tonumber(deposit.amount))
+			end
 
-		if (deposit.account.isDefault) then
-			player.Functions.AddMoney('bank', tonumber(deposit.amount))
+			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, deposit.account.id })
+
+			TriggerClientEvent(EiBankingEvents.DepositMoneySuccess, src, newBalance)
+		else
+			print("custom balance", deposit.account.balance)
+			local newBalance = deposit.account.balance + deposit.amount
+			print("custom new balance", newBalance)
+
+			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, deposit.account.id })
+
+			TriggerClientEvent(EiBankingEvents.DepositMoneySuccess, src, newBalance)
 		end
-
-		local newBalance = tonumber(currentBank) + tonumber(deposit.amount)
-
-		MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, deposit.account.id })
-
-		TriggerClientEvent(EiBankingEvents.DepositMoneySuccess, src, newBalance)
 	else
 		print("We do not have enough money")
 	end
@@ -71,10 +80,11 @@ AddEventHandler(EiBankingEvents.WithdrawMoney, function(withdraw)
 	local currentCash = player.PlayerData.money['cash']
 	local currentBank = player.PlayerData.money['bank']
 
-	if (withdraw.amount <= currentBank) then
-		if (withdraw.account.isDefault) then
+	if withdraw.amount <= currentBank then
+		print("Trying to withdraw", withdraw.amount)
+		if withdraw.account.isDefault == true then
+			print("withdraw: account is default")
 			player.Functions.RemoveMoney('bank', tonumber(withdraw.amount))
-
 			local newBalance = tonumber(currentBank) - tonumber(withdraw.amount)
 
 			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, withdraw.account.id })
@@ -84,8 +94,12 @@ AddEventHandler(EiBankingEvents.WithdrawMoney, function(withdraw)
 			TriggerClientEvent(EiBankingEvents.WithdrawMoneySuccess, src, newBalance)
 		else
 			-- remove money
-		end
+			local newBalance = withdraw.account.balance + withdraw.amount
 
+			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, withdraw.account.id })
+
+			TriggerClientEvent(EiBankingEvents.WithdrawMoneySuccess, src, newBalance)
+		end
 	else
 		print("Not enough money")
 	end

@@ -45,6 +45,7 @@ RegisterNUICallback(EiBankingEvents.WithdrawMoney, function(data, cb)
 	TriggerServerEvent(EiBankingEvents.WithdrawMoney, data)
 
 	RegisterNetEvent(EiBankingEvents.WithdrawMoneySuccess, function(newBalance)
+		print("new balance from withdraw", newBalance)
 		cb({ status = 'ok', data = newBalance })
 	end)
 end)

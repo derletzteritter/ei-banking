@@ -4,45 +4,60 @@ import { useActiveAccountValue } from "../Accounts/state/accounts.state";
 import { AccountBalance, AccountName } from "./styles/Details.styles";
 import { detailsIcons } from "../../icons/svgProvider";
 import DepositModal from "./components/DepositModal";
-import { useDepositModal, useWithdrawModal } from "./state/modal.state";
+import { useDepositModal, useWithdrawModal, useTransferModal } from "./state/modal.state";
 import { useAccountsApi } from "../Accounts/hooks/useAccountsApi";
 import WithdrawModal from "./components/WithdrawModal";
+import { Account } from "../../types/account";
 
 const AccountDetails: React.FC = () => {
 	const activeAccount = useActiveAccountValue();
 	const [depositModal, setDepositModal] = useDepositModal();
 	const [withdrawModal, setWithdrawModal] = useWithdrawModal();
 	const { depositMoney, withdrawMoney } = useAccountsApi()
+  const [transferModal, setTransferModal] = useTransferModal();
 	
 	if (!activeAccount) {
 		return <CircularProgress/>
 	}
 	
 	const openDepositModal = () => {
-		setDepositModal(true)
+		setDepositModal(true);
 	}
 	
 	const closeDepositModal = () => {
-		setDepositModal(false)
+		setDepositModal(false);
 	}
 	
 	const openWithdrawModal = () => {
-		setWithdrawModal(true)
+		setWithdrawModal(true);
 	}
 	
 	const closeWithdrawModal = () => {
-		setWithdrawModal(false)
+		setWithdrawModal(false);
 	}
+
+  const closeTransferModal = () => {
+    setTransferModal(false);
+  }
+
+  const openTransferModal = () => {
+    setTransferModal(true);
+  }
 	
 	const handleDepositModal = (amount: string) => {
-		depositMoney(activeAccount, amount)
-		closeDepositModal()
+		depositMoney(activeAccount, amount);
+		closeDepositModal();
 	}
 	
-	const handleWithdrawModal = async (amount: string) => {
-		withdrawMoney(activeAccount, amount)
+	const handleWithdrawModal = (amount: string) => {
+		withdrawMoney(activeAccount, amount);
 		closeWithdrawModal();
 	}
+
+  const handleTransferModal = (targetAccount: Account | number, amount: string) => {
+    console.log(targetAccount)
+    console.log(amount)
+  }
 	
 	return (
 		<Box ml={2}>
@@ -76,6 +91,7 @@ const AccountDetails: React.FC = () => {
 						Withdraw
 					</Button>
 					<Button
+            onClick={openTransferModal}
 						style={{ backgroundColor: "#42464A" }}
 						variant="contained"
 						endIcon={detailsIcons.transfer}
