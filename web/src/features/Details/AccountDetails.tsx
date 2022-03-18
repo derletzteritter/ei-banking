@@ -8,6 +8,7 @@ import { useDepositModal, useWithdrawModal, useTransferModal } from "./state/mod
 import { useAccountsApi } from "../Accounts/hooks/useAccountsApi";
 import WithdrawModal from "./components/WithdrawModal";
 import { Account } from "../../types/account";
+import TransferModal from "./components/TransferModal";
 
 const AccountDetails: React.FC = () => {
 	const activeAccount = useActiveAccountValue();
@@ -63,6 +64,7 @@ const AccountDetails: React.FC = () => {
 		<Box ml={2}>
 			<WithdrawModal open={withdrawModal} onClose={closeWithdrawModal} confirmWithdraw={handleWithdrawModal} />
 			<DepositModal open={depositModal} onClose={closeDepositModal} confirmDeposit={handleDepositModal} />
+			<TransferModal open={transferModal} onClose={closeTransferModal} confirmTransfer={handleTransferModal} />
 			<Box mt={2}>
 				<Stack direction="row" spacing={5}>
 					<Box>

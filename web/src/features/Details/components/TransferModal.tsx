@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Autocomplete,
   Button,
   Dialog,
   DialogActions,
@@ -10,7 +11,7 @@ import {
   TextField
 } from "@mui/material";
 import { Account } from "../../../types/account";
-import { useActiveAccountValue } from "../../Accounts/state/accounts.state";
+import { useAccountsValue, useActiveAccountValue } from "../../Accounts/state/accounts.state";
 
 interface TransferModalProps {
   open: boolean;
@@ -21,15 +22,23 @@ interface TransferModalProps {
 const TransferModal: React.FC<TransferModalProps> = ({ open, onClose, confirmTransfer }) => {
   const [amount, setAmount] = useState('');
   const [account, setAccount] = useState<Account>(null);
+  const accounts = useAccountsValue();
   
   const activeAccount = useActiveAccountValue();
   
+  const isDisabled = !amount || !account;
+  
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth={true}>
-      <DialogTitle>Deposit</DialogTitle>
+      <DialogTitle>Transfer</DialogTitle>
       <DialogContent>
-        <DialogContentText>Deposit money to <span
+        <DialogContentText>Transer money to an account from <span
           style={{ fontWeight: 'bold' }}>{activeAccount?.accountName}</span></DialogContentText>
+        <Autocomplete
+          options={accounts}
+          getOptionLabel={(acc) => acc.accountName}
+          renderInput={(params) => <TextField {...params} variant="standard"/>}
+        />
         <TextField
           autoFocus
           value={amount}
@@ -44,7 +53,7 @@ const TransferModal: React.FC<TransferModalProps> = ({ open, onClose, confirmTra
       </DialogContent>
       <DialogActions>
         <Button variant="outlined" onClick={onClose}>Cancel</Button>
-        <Button variant="contained" onClick={() => confirmTransfer(account, amount)}>Confirm</Button>
+        <Button variant="contained" onClick={() => confirmTransfer(account, amount)} disabled={isDisabled}>Confirm</Button>
       </DialogActions>
     </Dialog>
   )
