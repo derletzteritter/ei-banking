@@ -16,12 +16,12 @@ import { useAccountsValue, useActiveAccountValue } from "../../Accounts/state/ac
 interface TransferModalProps {
   open: boolean;
   onClose: () => void;
-  confirmTransfer: (targetAccount: Account, amount: string) => void;
+  confirmTransfer: (targetAccount: Account | string, amount: string) => void;
 }
 
 const TransferModal: React.FC<TransferModalProps> = ({ open, onClose, confirmTransfer }) => {
   const [amount, setAmount] = useState('');
-  const [account, setAccount] = useState<Account>(null);
+  const [account, setAccount] = useState<Account | string>(null);
   const accounts = useAccountsValue();
   
   const activeAccount = useActiveAccountValue();
@@ -35,9 +35,11 @@ const TransferModal: React.FC<TransferModalProps> = ({ open, onClose, confirmTra
         <DialogContentText>Transer money to an account from <span
           style={{ fontWeight: 'bold' }}>{activeAccount?.accountName}</span></DialogContentText>
         <Autocomplete
+          freeSolo
           options={accounts}
+          onChange={(e, val) => setAccount(val)}
           getOptionLabel={(acc) => acc.accountName}
-          renderInput={(params) => <TextField {...params} variant="standard"/>}
+          renderInput={(params) => <TextField {...params} variant="standard" onChange={(e) => setAccount(e.currentTarget.value)}/>}
         />
         <TextField
           autoFocus

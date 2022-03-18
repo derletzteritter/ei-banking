@@ -55,7 +55,7 @@ const AccountDetails: React.FC = () => {
 		closeWithdrawModal();
 	}
 
-  const handleTransferModal = (targetAccount: Account | number, amount: string) => {
+  const handleTransferModal = (targetAccount: Account | string, amount: string) => {
     console.log(targetAccount)
     console.log(amount)
   }
