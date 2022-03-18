@@ -14,7 +14,7 @@ const AccountDetails: React.FC = () => {
 	const activeAccount = useActiveAccountValue();
 	const [depositModal, setDepositModal] = useDepositModal();
 	const [withdrawModal, setWithdrawModal] = useWithdrawModal();
-	const { depositMoney, withdrawMoney } = useAccountsApi()
+	const { depositMoney, withdrawMoney, transferMoney } = useAccountsApi()
   const [transferModal, setTransferModal] = useTransferModal();
 	
 	if (!activeAccount) {
@@ -56,8 +56,8 @@ const AccountDetails: React.FC = () => {
 	}
 
   const handleTransferModal = (targetAccount: Account | string, amount: string) => {
-    console.log(targetAccount)
-    console.log(amount)
+		transferMoney(activeAccount, targetAccount, amount);
+	  closeTransferModal();
   }
 	
 	return (

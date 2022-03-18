@@ -28,6 +28,11 @@ const TransferModal: React.FC<TransferModalProps> = ({ open, onClose, confirmTra
   
   const isDisabled = !amount || !account;
   
+  const handleTransfer = () => {
+    confirmTransfer(account, amount)
+  }
+  
+  
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth={true}>
       <DialogTitle>Transfer</DialogTitle>
@@ -55,7 +60,7 @@ const TransferModal: React.FC<TransferModalProps> = ({ open, onClose, confirmTra
       </DialogContent>
       <DialogActions>
         <Button variant="outlined" onClick={onClose}>Cancel</Button>
-        <Button variant="contained" onClick={() => confirmTransfer(account, amount)} disabled={isDisabled}>Confirm</Button>
+        <Button variant="contained" onClick={handleTransfer} disabled={isDisabled}>Confirm</Button>
       </DialogActions>
     </Dialog>
   )

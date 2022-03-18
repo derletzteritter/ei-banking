@@ -34,9 +34,20 @@ export const useAccountsApi = () => {
 		})
 	}
 	
+	const transferMoney = (sourceAccount: Account, targetAccount: Account | string, amount: string) => {
+		fetchNui('ei-banking:transferMoney', {
+			sourceAccount,
+			targetAccount,
+			amount: parseInt(amount, 10)
+		}).then((resp) => {
+			console.log(resp)
+		})
+	}
+	
 	return {
 		createAccount,
 		depositMoney,
-		withdrawMoney
+		withdrawMoney,
+		transferMoney
 	}
 }
