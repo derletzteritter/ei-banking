@@ -121,8 +121,27 @@ end)
 RegisterNetEvent(EiBankingEvents.TransferMoney)
 AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 	local src = source
+
 	player = QBCore.Functions.GetPlayer(src)
 	local citizenId = player.PlayerData.citizenid
+
+  local sourceAccount = transfer.sourceAccount
+  local targetAccount = transfer.targetAccount
+  
+  -- We also need to get the acccount, if we just have an accountId
+  if sourceAccount.balance >= targetAccount then
+    -- if sourceAccount is default
+    if sourceAccount.isDefault == true then
+      player.Functions.RemoveMoney('bank', tonumber(transfer.amount))
+    elseif sourceAccount.isDefault == false then
+      local newBalance = tonumber(sourceAccount.balance) - tonumber(transfer.amount)
+      -- update custom account with new balance
+    end
+    -- custom account
+    --  check of default account
+    --  is the player online
+    --    if so, we need to update with qbcore aswell
+  end
 end)
 
 
