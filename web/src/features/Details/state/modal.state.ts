@@ -15,6 +15,11 @@ export const transferModal = atom<boolean>({
 	default: false
 })
 
+export const settingsModal = atom<boolean>({
+	key: 'detailsSettingsModal',
+	default: false
+})
+
 export const useDepositModal = () => useRecoilState(depositModal)
 export const useSetDepositModal = () => useSetRecoilState(depositModal)
 
@@ -23,3 +28,6 @@ export const useSetWithdrawModal = () => useSetRecoilState(withdrawModal)
 
 export const useTransferModal = () => useRecoilState(transferModal)
 export const useSetTransferModal = () => useSetRecoilState(transferModal)
+
+export const useSettingsModal = () => useRecoilState(settingsModal)
+export const useSetSettingsModal = () => useSetRecoilState(settingsModal)
