@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogContentText, Tab } from "@mui/material";
+import { Box, Button, Dialog, DialogContent, DialogContentText, Tab, Typography } from "@mui/material";
 import { TabList, TabPanel, TabContext } from '@mui/lab'
 
 interface SettingsModalProps {
@@ -23,10 +23,15 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
             <Tab label="Settings" value="2"/>
           </TabList>
           <TabPanel value="1">
-	         
+	          Cyka
           </TabPanel>
           <TabPanel value="2">
-            Blayt
+	          <Box>
+		          <Typography>Danger Zone</Typography>
+	            <Button style={{ marginTop: 10 }} variant="outlined">
+		            Delete
+	            </Button>
+	          </Box>
           </TabPanel>
         </DialogContent>
       </TabContext>
