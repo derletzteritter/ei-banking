@@ -16,8 +16,8 @@ const AccountDetails: React.FC = () => {
 	const [depositModal, setDepositModal] = useDepositModal();
 	const [withdrawModal, setWithdrawModal] = useWithdrawModal();
 	const { depositMoney, withdrawMoney, transferMoney } = useAccountsApi()
-  const [transferModal, setTransferModal] = useTransferModal();
-  const [settingsModal, setSettingsModal] = useSettingsModal();
+	const [transferModal, setTransferModal] = useTransferModal();
+	const [settingsModal, setSettingsModal] = useSettingsModal();
 	
 	if (!activeAccount) {
 		return <CircularProgress/>
@@ -38,22 +38,22 @@ const AccountDetails: React.FC = () => {
 	const closeWithdrawModal = () => {
 		setWithdrawModal(false);
 	}
-
-  const closeTransferModal = () => {
-    setTransferModal(false);
-  }
-
-  const openTransferModal = () => {
-    setTransferModal(true);
-  }
+	
+	const closeTransferModal = () => {
+		setTransferModal(false);
+	}
+	
+	const openTransferModal = () => {
+		setTransferModal(true);
+	}
 	
 	const closeSettingsModal = () => {
-    setSettingsModal(false);
-  }
+		setSettingsModal(false);
+	}
 	
 	const openSettingsModal = () => {
-    setSettingsModal(true);
-  }
+		setSettingsModal(true);
+	}
 	
 	const handleDepositModal = (amount: string) => {
 		depositMoney(activeAccount, amount);
@@ -64,30 +64,30 @@ const AccountDetails: React.FC = () => {
 		withdrawMoney(activeAccount, amount);
 		closeWithdrawModal();
 	}
-
-  const handleTransferModal = (targetAccount: Account | string, amount: string) => {
+	
+	const handleTransferModal = (targetAccount: Account | string, amount: string) => {
 		transferMoney(activeAccount, targetAccount, amount);
-	  closeTransferModal();
-  }
+		closeTransferModal();
+	}
 	
 	return (
 		<Box ml={2}>
-			<WithdrawModal 
-        open={withdrawModal} 
-        onClose={closeWithdrawModal} 
-        confirmWithdraw={handleWithdrawModal}
-      />
-			<DepositModal 
-        open={depositModal} 
-        onClose={closeDepositModal} 
-        confirmDeposit={handleDepositModal} 
-      />
-			<TransferModal 
-        open={transferModal} 
-        onClose={closeTransferModal} 
-        confirmTransfer={handleTransferModal} 
-      />
-      <SettingsModal open={settingsModal} onClose={closeSettingsModal} />
+			<WithdrawModal
+				open={withdrawModal}
+				onClose={closeWithdrawModal}
+				confirmWithdraw={handleWithdrawModal}
+			/>
+			<DepositModal
+				open={depositModal}
+				onClose={closeDepositModal}
+				confirmDeposit={handleDepositModal}
+			/>
+			<TransferModal
+				open={transferModal}
+				onClose={closeTransferModal}
+				confirmTransfer={handleTransferModal}
+			/>
+			<SettingsModal open={settingsModal} onClose={closeSettingsModal}/>
 			<Box mt={2}>
 				<Stack direction="row" spacing={5}>
 					<Box>
@@ -95,13 +95,13 @@ const AccountDetails: React.FC = () => {
 						<AccountBalance>{activeAccount.balance}</AccountBalance>
 					</Box>
 					<Box>
-						<Button 
-              onClick={openSettingsModal}
-              endIcon={detailsIcons.cog} 
-              variant="contained"
-            >
-              Settings
-            </Button>
+						<Button
+							onClick={openSettingsModal}
+							endIcon={detailsIcons.cog}
+							variant="contained"
+						>
+							Settings
+						</Button>
 					</Box>
 				</Stack>
 				<Stack mt={3.4} direction="row" spacing={2}>
@@ -122,7 +122,7 @@ const AccountDetails: React.FC = () => {
 						Withdraw
 					</Button>
 					<Button
-            onClick={openTransferModal}
+						onClick={openTransferModal}
 						style={{ backgroundColor: "#42464A" }}
 						variant="contained"
 						endIcon={detailsIcons.transfer}
