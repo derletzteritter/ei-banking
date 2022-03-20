@@ -23,7 +23,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
             <Tab label="Settings" value="2"/>
           </TabList>
           <TabPanel value="1">
-            Cyka
+	         
           </TabPanel>
           <TabPanel value="2">
             Blayt
