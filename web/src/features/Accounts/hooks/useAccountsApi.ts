@@ -1,9 +1,11 @@
 import { fetchNui } from "../../../utils/fetchNui";
 import { Account } from "../../../types/account";
 import { useAccountsActions } from "./useAccountsActions";
+import { useSnackbar } from "notistack";
 
 export const useAccountsApi = () => {
 	const { createLocalAccount, updateAccountBalance } = useAccountsActions();
+	const { enqueueSnackbar } = useSnackbar();
 	
 	const createAccount = (name: string) => {
 		fetchNui('ei-banking:createAccount', { name }).then((res) => {
@@ -19,6 +21,7 @@ export const useAccountsApi = () => {
 		}).then((resp) => {
 			if (resp.status === 'ok') {
 				updateAccountBalance(account.id, resp.data)
+				enqueueSnackbar(`You deposited ${amount} to ${account.accountName}`, { variant: 'success' })
 			}
 		})
 	}
@@ -30,6 +33,7 @@ export const useAccountsApi = () => {
 		}).then((resp) => {
 			if (resp.status === 'ok') {
 				updateAccountBalance(account.id, resp.data)
+				enqueueSnackbar(`You have withdrawn ${amount} from ${account.accountName}`, { variant: 'success' })
 			}
 		})
 	}
@@ -41,6 +45,14 @@ export const useAccountsApi = () => {
 			amount: parseInt(amount, 10)
 		}).then((resp) => {
 			console.log(resp)
+			let targetAccountName;
+			if (typeof targetAccount !== "string") {
+				targetAccountName = targetAccount.accountName;
+			} else {
+				targetAccountName = targetAccount
+			}
+			
+			enqueueSnackbar(`You have transferred ${amount} from ${sourceAccount.accountName} to ${targetAccountName}`, { variant: 'success' })
 		})
 	}
 	
