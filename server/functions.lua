@@ -14,3 +14,5 @@ function GetOrCreateDefaultAccount(playerData)
 		print("Created default account for:", citizenId)
 	end
 end
+
+function getIdentifierFromAccount()  end

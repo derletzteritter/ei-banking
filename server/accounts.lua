@@ -117,9 +117,7 @@ end)
 RegisterNetEvent(EiBankingEvents.TransferMoney)
 AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 	local src = source
-
-	player = QBCore.Functions.GetPlayer(src)
-	local citizenId = player.PlayerData.citizenid
+	local player = QBCore.Functions.GetPlayer(src)
 
 	local sourceAccount = transfer.sourceAccount
 	local targetAccount = transfer.targetAccount
