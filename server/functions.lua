@@ -15,4 +15,10 @@ function GetOrCreateDefaultAccount(playerData)
 	end
 end
 
-function getIdentifierFromAccount()  end
+function GetParticipantsFromAccountId(accountId)
+	local query = "SELECT citizen_id as citizenId FROM custom_bank_accounts_members WHERE id = ?"
+
+	local citizenIds = MySQL.query.await(query, { accountId })
+
+	return citizenIds
+end

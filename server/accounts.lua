@@ -143,6 +143,12 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 		if targetAccount.isDefault == true then
 			-- check if player is online
 			-- if not just update the db
+			local participants = GetParticipantsFromAccountId(targetAccount.id)
+
+			for k,v in pairs(participants) do
+				local targetPlayer = QBCore.Functions.GetPlayerByCitizenId(v)
+			end
+
 		end
 	end
 end)
