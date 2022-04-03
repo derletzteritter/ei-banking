@@ -144,11 +144,13 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 			-- check if player is online
 			-- if not just update the db
 			local participants = GetParticipantsFromAccountId(targetAccount.id)
+			local targetPlayer = QBCore.Functions.GetPlayerByCitizenId(participants[1])
 
-			for k,v in pairs(participants) do
-				local targetPlayer = QBCore.Functions.GetPlayerByCitizenId(v)
-			end
+			local newBalance = tonumber(targetPlayer.balance) - tonumber(transfer.amount)
+			targetPlayer.Functions.AddMoney('bank', tonumber(transfer.amount))
+			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, targetAccount.id })
 
+			TriggerClientEvent(EiBankingEvents.DepositMoneySuccess, src, newBalance)
 		end
 	end
 end)
