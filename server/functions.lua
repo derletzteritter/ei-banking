@@ -16,9 +16,17 @@ function GetOrCreateDefaultAccount(playerData)
 end
 
 function GetParticipantsFromAccountId(accountId)
-	local query = "SELECT citizen_id as citizenId FROM custom_bank_accounts_members WHERE id = ?"
+	local query = "SELECT citizen_id as citizenId FROM custom_bank_accounts_members WHERE id = ? LIMIT 1"
 
 	local citizenIds = MySQL.query.await(query, { accountId })
 
 	return citizenIds
+end
+
+function GetDefaultBankAmountFromCitizenId(citizenid)
+	local money = MySQL.query.await("SELECT JSON_ARRAY(money) FROM players WHERE citizenid = ?", { citizenid })
+	local money_decoded = json.decode(money)
+	local bankAmount = money_decoded["bank"]
+
+	return bankAmount
 end

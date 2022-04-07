@@ -26,7 +26,6 @@ RegisterNetEvent(EiBankingEvents.CreateAccount, function(accountData)
 
 	local InsertId
 
-
 	-- Insert account
 	MySQL.insert("INSERT INTO custom_bank_accounts (name, type, balance, is_default) VALUES (?, ?, ?, ?)", { accountData.name, "personal", 0, false }, function(insertId)
 		InsertId = insertId
@@ -74,7 +73,6 @@ RegisterNetEvent(EiBankingEvents.WithdrawMoney)
 AddEventHandler(EiBankingEvents.WithdrawMoney, function(withdraw)
 	local src = source
 	local player = QBCore.Functions.GetPlayer(src)
-	--local currentCash = player.PlayerData.money['cash']
 	local currentBank = player.PlayerData.money['bank']
 
 	if withdraw.amount <= currentBank then
@@ -127,12 +125,11 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 		-- if sourceAccount is default
 		if sourceAccount.isDefault == true then
 			player.Functions.RemoveMoney('bank', tonumber(transfer.amount))
-			local newBalance = tonumber(sourceAccount.balance) - tonumber(transfer.amount)
-			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, withdraw.sourceAccount.id })
+			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { player.PlayerData.money['bank'], sourceAccount.id })
 		elseif sourceAccount.isDefault == false then
 			-- update custom account with new balance
 			local newBalance = tonumber(sourceAccount.balance) - tonumber(transfer.amount)
-			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, withdraw.sourceAccount.id })
+			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, sourceAccount.id })
 		end
 		-- custom account
 		--  check of default account
@@ -143,8 +140,22 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 		if targetAccount.isDefault == true then
 			-- check if player is online
 			-- if not just update the db
-			local participants = GetParticipantsFromAccountId(targetAccount.id)
-			local targetPlayer = QBCore.Functions.GetPlayerByCitizenId(participants[1])
+			local participants = GetParticipantsFromAccountId(targetAccount.id or targetAccount)
+
+			-- Default, so we don't care about the other participants, since there aren't any
+			-- targetPlayer is the source, if the player is online
+			local targetPlayer = QBCore.Functions.GetPlayerByCitizenId(participants[1].citizenId)
+			printTable(targetPlayer)
+			if targetPlayer ~= nil then
+				targetPlayer.Functions.AddMoney('bank', tonumber(transfer.amount))
+
+				MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { player.PlayerData.money['bank'], targetAccount.id or targetAccount })
+			else
+				local balance = GetDefaultBankAmountFromCitizenId(participants[1].citizenId)
+				local query = "UPDATE players SET money = JSON_SET(money, '$_bank', " .. tonumber(balance) .. ")"
+
+				MySQL.query.await(query)
+			end
 
 			local newBalance = tonumber(targetPlayer.balance) - tonumber(transfer.amount)
 			targetPlayer.Functions.AddMoney('bank', tonumber(transfer.amount))
