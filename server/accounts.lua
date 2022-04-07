@@ -118,7 +118,11 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 	local player = QBCore.Functions.GetPlayer(src)
 
 	local sourceAccount = transfer.sourceAccount
+
+	-- this can either just be a uid (string) or a account table
 	local targetAccount = transfer.targetAccount
+
+	local participants = GetParticipantsFromAccountId(targetAccount.id or targetAccount)
 
 	-- We also need to get the acccount, if we just have an accountId
 	if sourceAccount.balance >= transfer.amount then
@@ -138,31 +142,29 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 
 
 		if targetAccount.isDefault == true then
-			-- check if player is online
-			-- if not just update the db
-			local participants = GetParticipantsFromAccountId(targetAccount.id or targetAccount)
-
 			-- Default, so we don't care about the other participants, since there aren't any
 			-- targetPlayer is the source, if the player is online
 			local targetPlayer = QBCore.Functions.GetPlayerByCitizenId(participants[1].citizenId)
-			printTable(targetPlayer)
 			if targetPlayer ~= nil then
 				targetPlayer.Functions.AddMoney('bank', tonumber(transfer.amount))
 
 				MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { player.PlayerData.money['bank'], targetAccount.id or targetAccount })
 			else
 				local balance = GetDefaultBankAmountFromCitizenId(participants[1].citizenId)
-				local query = "UPDATE players SET money = JSON_SET(money, '$_bank', " .. tonumber(balance) .. ")"
+				local query = "UPDATE players SET money = JSON_SET(money, '$.bank', " .. tonumber(balance) .. ")"
 
 				MySQL.query.await(query)
 			end
+		end
 
+		if targetAccount.isDefault == false then
 			local newBalance = tonumber(targetPlayer.balance) - tonumber(transfer.amount)
 			targetPlayer.Functions.AddMoney('bank', tonumber(transfer.amount))
-			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, targetAccount.id })
+			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, targetAccount.id or targetAccount })
 
-			TriggerClientEvent(EiBankingEvents.DepositMoneySuccess, src, newBalance)
 		end
+
+		TriggerClientEvent(EiBankingEvents.DepositMoneySuccess, src, newBalance)
 	end
 end)
 
