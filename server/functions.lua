@@ -30,3 +30,11 @@ function GetDefaultBankAmountFromCitizenId(citizenid)
 
 	return bankAmount
 end
+
+function GetCustomAccount(accountId)
+	local query = "SELECT * FROM custom_bank_accounts WHERE id = ? LIMIT 1"
+
+	local account = MySQL.query.await(query, { accountId })
+
+	return account[1]
+end

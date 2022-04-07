@@ -158,13 +158,11 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 		end
 
 		if targetAccount.isDefault == false then
-			local newBalance = tonumber(targetPlayer.balance) - tonumber(transfer.amount)
-			targetPlayer.Functions.AddMoney('bank', tonumber(transfer.amount))
+			local customAccount = GetCustomAccount(targetAccount.id)
+			local newBalance = tonumber(customAccount.balance) + tonumber(transfer.amount)
+
 			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, targetAccount.id or targetAccount })
-
 		end
-
-		TriggerClientEvent(EiBankingEvents.DepositMoneySuccess, src, newBalance)
 	end
 end)
 
