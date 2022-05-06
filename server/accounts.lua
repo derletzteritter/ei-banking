@@ -7,8 +7,8 @@ AddEventHandler('QBCore:Server:PlayerLoaded', function(player)
 	GetOrCreateDefaultAccount(player.PlayerData)
 end)
 
-AddEventHandler(EiBankingEvents.GetAccounts)
-RegisterNetEvent(EiBankingEvents.GetAccounts, function()
+RegisterNetEvent(EiBankingEvents.GetAccounts)
+AddEventHandler(EiBankingEvents.GetAccounts, function()
 	local src = source
 
 	local player = QBCore.Functions.GetPlayer(src)
@@ -20,8 +20,8 @@ RegisterNetEvent(EiBankingEvents.GetAccounts, function()
 		end)
 end)
 
-AddEventHandler(EiBankingEvents.CreateAccount)
-RegisterNetEvent(EiBankingEvents.CreateAccount, function(accountData)
+RegisterNetEvent(EiBankingEvents.CreateAccount)
+AddEventHandler(EiBankingEvents.CreateAccount, function(accountData)
 	local src = source
 	local player = QBCore.Functions.GetPlayer(src)
 	local citizen_id = player.PlayerData.citizenid
@@ -126,9 +126,6 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 	-- this can either just be a uid (string) or a account table
 	local targetAccount = transfer.targetAccount
 
-	print("sourceAccount id", sourceAccount.id)
-	print("targetAccount id", targetAccount.id)
-
 	local participants = GetParticipantsFromAccountId(targetAccount.id or targetAccount)
 
 	-- We also need to get the acccount, if we just have an accountId
@@ -159,8 +156,8 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 			if targetPlayer ~= nil then
 				targetPlayer.Functions.AddMoney('bank', tonumber(transfer.amount))
 
-				MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { targetPlayer.PlayerData.money['bank'], targetAccount.id or targetAccount })
 				TriggerClientEvent(EiBankingEvents.TransferMoneyBroadcast, targetPlayer.PlayerData.source, { accountId = targetAccount.id or targetAccount, newBalance = targetPlayer.PlayerData.money['bank'] })
+				MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { targetPlayer.PlayerData.money['bank'], targetAccount.id or targetAccount })
 			else
 				-- We don't actually have to update the custom bank. It will sync once the target player connects.
 				local balance = GetDefaultBankAmountFromCitizenId(participants[1].citizenId)
