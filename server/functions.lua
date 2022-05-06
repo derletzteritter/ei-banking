@@ -16,9 +16,10 @@ function GetOrCreateDefaultAccount(playerData)
 end
 
 function GetParticipantsFromAccountId(accountId)
-	local query = "SELECT citizen_id as citizenId FROM custom_bank_accounts_members WHERE id = ? LIMIT 1"
+	print('GetParticipantsFromAccountId', accountId)
+	local query = "SELECT citizen_id as citizenId FROM custom_bank_accounts_members WHERE account_id = ?"
 
-	local citizenIds = MySQL.query.await(query, { accountId })
+	local citizenIds = MySQL.query.await(query, { tonumber(accountId) })
 
 	return citizenIds
 end
@@ -32,7 +33,7 @@ function GetDefaultBankAmountFromCitizenId(citizenid)
 end
 
 function GetCustomAccount(accountId)
-	local query = "SELECT * FROM custom_bank_accounts WHERE id = ? LIMIT 1"
+	local query = "SELECT * FROM custom_bank_accounts WHERE id = ?"
 
 	local account = MySQL.query.await(query, { accountId })
 

@@ -66,3 +66,8 @@ RegisterNetEvent(EiBankingEvents.SetNotification)
 AddEventHandler(EiBankingEvents.SetNotification, function(notification)
 	SendReactMessage(EiBankingEvents.SetNotification, notification)
 end)
+
+RegisterNetEvent(EiBankingEvents.TransferMoneyBroadcast)
+AddEventHandler(EiBankingEvents.TransferMoneyBroadcast, function(data)
+	SendReactMessage(EiBankingEvents.TransferMoneyBroadcast, data)
+end)

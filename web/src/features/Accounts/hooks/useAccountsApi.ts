@@ -45,13 +45,14 @@ export const useAccountsApi = () => {
 			targetAccount,
 			amount: parseInt(amount, 10)
 		}).then((resp) => {
-			console.log(resp)
 			let targetAccountName;
 			if (typeof targetAccount !== "string") {
 				targetAccountName = targetAccount.accountName;
 			} else {
 				targetAccountName = targetAccount
 			}
+			
+			updateAccountBalance(sourceAccount.id, resp.data)
 			
 			enqueueSnackbar(`You have transferred ${amount} from ${sourceAccount.accountName} to ${targetAccountName}`, { variant: 'success' })
 		})

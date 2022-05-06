@@ -1,5 +1,7 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
+-- Welcome to hell, enter with caution.
+
 RegisterNetEvent('QBCore:Server:PlayerLoaded')
 AddEventHandler('QBCore:Server:PlayerLoaded', function(player)
 	GetOrCreateDefaultAccount(player.PlayerData)
@@ -46,7 +48,7 @@ AddEventHandler(EiBankingEvents.DepositMoney, function(deposit)
 
 	if currentCash >= deposit.amount then
 		-- If we have enough cash
-		if deposit.account.isDefault == true then
+		if deposit.account.isDefault == 1 then
 			local newBalance = tonumber(currentBank) + tonumber(deposit.amount)
 			player.Functions.RemoveMoney('cash', tonumber(deposit.amount))
 
@@ -77,7 +79,8 @@ AddEventHandler(EiBankingEvents.WithdrawMoney, function(withdraw)
 
 	if withdraw.amount <= currentBank then
 		print("Trying to withdraw", withdraw.amount)
-		if withdraw.account.isDefault == true then
+		if withdraw.account.isDefault == 1 then
+			print("This is a default account")
 			player.Functions.RemoveMoney('bank', tonumber(withdraw.amount))
 			local newBalance = tonumber(currentBank) - tonumber(withdraw.amount)
 
@@ -87,8 +90,9 @@ AddEventHandler(EiBankingEvents.WithdrawMoney, function(withdraw)
 
 			TriggerClientEvent(EiBankingEvents.WithdrawMoneySuccess, src, newBalance)
 		else
+			print("This is not a default account")
 			-- remove money
-			local newBalance = withdraw.account.balance + withdraw.amount
+			local newBalance = tonumber(withdraw.account.balance) + tonumber(withdraw.amount)
 
 			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, withdraw.account.id })
 
@@ -122,34 +126,43 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 	-- this can either just be a uid (string) or a account table
 	local targetAccount = transfer.targetAccount
 
+	print("sourceAccount id", sourceAccount.id)
+	print("targetAccount id", targetAccount.id)
+
 	local participants = GetParticipantsFromAccountId(targetAccount.id or targetAccount)
 
 	-- We also need to get the acccount, if we just have an accountId
 	if sourceAccount.balance >= transfer.amount then
+		local newBalance = tonumber(sourceAccount.balance) - tonumber(transfer.amount)
 		-- if sourceAccount is default
-		if sourceAccount.isDefault == true then
+		if sourceAccount.isDefault == 1 then
 			player.Functions.RemoveMoney('bank', tonumber(transfer.amount))
-			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { player.PlayerData.money['bank'], sourceAccount.id })
+			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { player.PlayerData.money['bank'], tonumber(sourceAccount.id) })
 		elseif sourceAccount.isDefault == false then
 			-- update custom account with new balance
-			local newBalance = tonumber(sourceAccount.balance) - tonumber(transfer.amount)
-			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, sourceAccount.id })
+			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, tonumber(sourceAccount.id) })
 		end
+		-- update source account
+		TriggerClientEvent(EiBankingEvents.TransferMoneySuccess, src, newBalance)
+
 		-- custom account
 		--  check of default account
 		--  is the player online
 		--    if so, we need to update with qbcore aswell
 
 
-		if targetAccount.isDefault == true then
+		if targetAccount.isDefault == 1 then
 			-- Default, so we don't care about the other participants, since there aren't any
 			-- targetPlayer is the source, if the player is online
 			local targetPlayer = QBCore.Functions.GetPlayerByCitizenId(participants[1].citizenId)
+			print("We have a target player", targetPlayer.PlayerData.source)
 			if targetPlayer ~= nil then
 				targetPlayer.Functions.AddMoney('bank', tonumber(transfer.amount))
 
-				MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { player.PlayerData.money['bank'], targetAccount.id or targetAccount })
+				MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { targetPlayer.PlayerData.money['bank'], targetAccount.id or targetAccount })
+				TriggerClientEvent(EiBankingEvents.TransferMoneyBroadcast, targetPlayer.PlayerData.source, { accountId = targetAccount.id or targetAccount, newBalance = targetPlayer.PlayerData.money['bank'] })
 			else
+				-- We don't actually have to update the custom bank. It will sync once the target player connects.
 				local balance = GetDefaultBankAmountFromCitizenId(participants[1].citizenId)
 				local query = "UPDATE players SET money = JSON_SET(money, '$.bank', " .. tonumber(balance) .. ")"
 
@@ -157,11 +170,15 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 			end
 		end
 
-		if targetAccount.isDefault == false then
-			local customAccount = GetCustomAccount(targetAccount.id)
-			local newBalance = tonumber(customAccount.balance) + tonumber(transfer.amount)
+		if targetAccount.isDefault == 0 then
+			local targetPlayer = QBCore.Functions.GetPlayerByCitizenId(participants[1].citizenId)
+			print("We have a target player", targetPlayer.PlayerData.source)
 
-			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, targetAccount.id or targetAccount })
+			local customAccount = GetCustomAccount(targetAccount.id or targetAccount)
+			local newTargetBalance = tonumber(customAccount.balance) + tonumber(transfer.amount)
+
+			TriggerClientEvent(EiBankingEvents.TransferMoneyBroadcast, targetPlayer.PlayerData.source, { accountId = targetAccount.id or targetAccount, newBalance = newTargetBalance })
+			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newTargetBalance, targetAccount.id or targetAccount })
 		end
 	end
 end)

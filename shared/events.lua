@@ -11,5 +11,6 @@ EiBankingEvents = {
 	SyncDefaultAccountSuccess = 'ei-banking:syncDefaultAccountSuccess',
 	TransferMoney = 'ei-banking:transferMoney',
 	TransferMoneySuccess = 'ei-banking:transferMoneySuccess',
+	TransferMoneyBroadcast = 'ei-banking:transferBroadcast',
 	SetNotification = 'ei-banking:setNotification'
 }
