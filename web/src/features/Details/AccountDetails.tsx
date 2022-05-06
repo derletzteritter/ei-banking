@@ -94,15 +94,17 @@ const AccountDetails: React.FC = () => {
 						<AccountName>{activeAccount.accountName}</AccountName>
 						<AccountBalance>{activeAccount.balance}</AccountBalance>
 					</Box>
-					<Box>
-						<Button
-							onClick={openSettingsModal}
-							endIcon={detailsIcons.cog}
-							variant="contained"
-						>
-							Settings
-						</Button>
-					</Box>
+					{!activeAccount.isDefault && (
+						<Box>
+							<Button
+								onClick={openSettingsModal}
+								endIcon={detailsIcons.cog}
+								variant="contained"
+							>
+								Settings
+							</Button>
+						</Box>
+					)}
 				</Stack>
 				<Stack mt={3.4} direction="row" spacing={2}>
 					<Button

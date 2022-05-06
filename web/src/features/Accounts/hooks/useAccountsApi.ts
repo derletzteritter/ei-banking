@@ -27,6 +27,7 @@ export const useAccountsApi = () => {
 	}
 	
 	const withdrawMoney = (account: Account, amount: string) => {
+		console.log('withdrawMoney account', account)
 		fetchNui('ei-banking:withdrawMoney', {
 			account,
 			amount: parseInt(amount, 10)

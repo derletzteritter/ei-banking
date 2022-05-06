@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Box, CircularProgress } from "@mui/material";
-import { Account, AccountType } from "../../types/account";
+import { Account } from "../../types/account";
 import AccountItem from "./components/AccountItem";
 
 interface AccountsListProps {
