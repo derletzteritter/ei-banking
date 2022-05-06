@@ -26,7 +26,7 @@ const AccountsList: React.FC<AccountsListProps> = ({ accounts, handleChangeAccou
 			gridGap: 5
 		}}>
 			{accounts.map((account) => (
-				<AccountItem account={account} handleChangeAccount={handleChangeAccount} />
+				<AccountItem key={account.id} account={account} handleChangeAccount={handleChangeAccount} />
 			))}
 		</Box>
 	)

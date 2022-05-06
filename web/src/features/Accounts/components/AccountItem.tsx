@@ -1,18 +1,20 @@
 import React from 'react';
 import { Account } from "../../../types/account";
 import { Box, styled } from "@mui/material";
+import { useActiveAccountValue } from "../state/accounts.state";
 
-const ItemWrapper = styled(Box)({
+const ItemWrapper = styled(Box)<{ selected: boolean }>(({ selected }) => ({
 	background: '#42464A',
 	color: '#fff',
 	height: '60px',
 	boxSizing: 'border-box',
 	borderRadius: 7,
+	border: selected ? '2px solid gray' : '2px solid #42464A',
 	paddingLeft: 10,
 	paddingTop: 5,
 	display: 'flex',
 	flexDirection: 'column',
-})
+}))
 
 const PrimaryText = styled('p')({
 	fontWeight: 500,
@@ -46,8 +48,10 @@ interface AccountItemProps {
 }
 
 const AccountItem: React.FC<AccountItemProps> = ({ account, handleChangeAccount }) => {
+	const activeAccount = useActiveAccountValue();
+	
 	return (
-		<ItemWrapper onClick={() => handleChangeAccount(account)}>
+		<ItemWrapper onClick={() => handleChangeAccount(account)} selected={activeAccount?.id === account?.id}>
 			<Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: 0}}>
 				<PrimaryText>{account.accountName}</PrimaryText>
 				<TypeText>{account.type}</TypeText>
