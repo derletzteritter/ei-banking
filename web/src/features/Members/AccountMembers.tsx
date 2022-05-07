@@ -22,10 +22,14 @@ const membersMock = [
 ]
 
 const AccountMembers = () => {
+    const handleUpdateMember = useCallback((data: any) => {
+        console.log(data)
+    }, [])
+
     return (
         <Box>
             {membersMock.map((member: any) => (
-                <Member member={member} />
+                <Member member={member} updateMember={handleUpdateMember} />
             ))}
         </Box>
     )

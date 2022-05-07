@@ -10,12 +10,18 @@ import {
 
 interface MemberProps {
   member: any;
+  updateMember: (data: any) => void;
 }
 
-const Member: React.FC<MemberProps> = ({ member }) => {
+const Member: React.FC<MemberProps> = ({ member, updateMember }) => {
     const [canDeposit, setCanDeposit] = useState(member.canDeposit);
     const [canWithdraw, setCanWithdraw] = useState(member.canWithdraw);
     const [canTransfer, setCanTransfer] = useState(member.canTransfer);
+
+    const handleUpdate = () => {
+        const data = { canDeposit, canWithdraw, canTransfer }
+        updateMember(data)
+    }
 
   return (
     <Box
@@ -31,7 +37,7 @@ const Member: React.FC<MemberProps> = ({ member }) => {
           {member.citizenId}
         </Typography>
         <Box mt={1}>
-          <Button size="small" variant="outlined">
+          <Button onClick={handleUpdate} size="small" variant="outlined">
             Update
           </Button>
         </Box>
@@ -44,13 +50,13 @@ const Member: React.FC<MemberProps> = ({ member }) => {
             flexDirection: "row",
           }}
         >
-          <FormControlLabel control={<Checkbox checked={canDeposit} />} label="Deposit" />
-          <FormControlLabel control={<Checkbox checked={canWithdraw} />} label="Withdraw" />
-          <FormControlLabel control={<Checkbox checked={canTransfer} />} label="Transfer" />
+          <FormControlLabel control={<Checkbox onChange={(e) => setCanDeposit(e.target.checked)} checked={canDeposit} />} label="Deposit" />
+          <FormControlLabel control={<Checkbox onChange={(e) => setCanWithdraw(e.target.checked)} checked={canWithdraw} />} label="Withdraw" />
+          <FormControlLabel control={<Checkbox onChange={(e) => setCanTransfer(e.target.checked)} checked={canTransfer} />} label="Transfer" />
         </FormGroup>
       </Box>
     </Box>
   );
 };
 
-export default Member;
+export default React.memo(Member);
