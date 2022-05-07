@@ -1,13 +1,11 @@
 import React from 'react';
 import { Box, Typography } from "@mui/material";
+import AccountMembers from '../../../Members/AccountMembers';
 
 const PermissionPanel: React.FC = () => {
 	return (
 		<Box>
-			<Typography>Permissions</Typography>
-			<Box>
-				<Typography>Change permissions for stuff</Typography>
-			</Box>
+			<AccountMembers />
 		</Box>
 	)
 }

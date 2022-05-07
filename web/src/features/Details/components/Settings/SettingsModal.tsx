@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Dialog, DialogContent, DialogContentText, Tab, Typography } from "@mui/material";
 import { TabList, TabPanel, TabContext } from '@mui/lab'
+import PermissionPanel from './PermissionPanel';
 
 interface SettingsModalProps {
 	open: boolean;
@@ -14,7 +15,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
   }
 
 	return (
-		<Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth={true}>
+		<Dialog open={open} onClose={onClose} maxWidth="md" fullWidth={true}>
       <TabContext value={tabValue}>
         <DialogContent>
           <DialogContentText>Settings</DialogContentText>
@@ -23,7 +24,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
             <Tab label="Settings" value="2"/>
           </TabList>
           <TabPanel value="1">
-	          Cyka
+	          <PermissionPanel />
           </TabPanel>
           <TabPanel value="2">
 	          <Box>
