@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { Box } from '@mui/material';
 import Member from './Member';
+import { useMemberAPI } from './hooks/useMemberAPI';
 
 const membersMock = [
     {
@@ -22,9 +23,11 @@ const membersMock = [
 ]
 
 const AccountMembers = () => {
+    const { updateAccountMember } = useMemberAPI()
+
     const handleUpdateMember = useCallback((data: any) => {
-        console.log(data)
-    }, [])
+        updateAccountMember(data)
+    }, [updateAccountMember])
 
     return (
         <Box>
