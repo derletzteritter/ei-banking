@@ -41,7 +41,7 @@ const TransferModal: React.FC<TransferModalProps> = ({ open, onClose, confirmTra
           style={{ fontWeight: 'bold' }}>{activeAccount?.accountName}</span></DialogContentText>
         <Autocomplete
           freeSolo
-          options={accounts}
+          options={accounts.filter((acc) => acc.id !== activeAccount.id)}
           onChange={(e, val) => setAccount(val)}
           getOptionLabel={(acc) => acc.accountName}
           renderInput={(params) => <TextField {...params} variant="standard" onChange={(e) => setAccount(e.currentTarget.value)}/>}

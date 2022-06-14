@@ -20,7 +20,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
         <DialogContent>
           <DialogContentText>Settings</DialogContentText>
           <TabList onChange={handleTabChange}>
-            <Tab label="Permissions" value="1"/>
+            <Tab label="Members" value="1"/>
             <Tab label="Settings" value="2"/>
           </TabList>
           <TabPanel value="1">
