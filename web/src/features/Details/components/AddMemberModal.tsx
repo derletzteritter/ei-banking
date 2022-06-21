@@ -5,7 +5,7 @@ import { useActiveAccountValue } from "../../Accounts/state/accounts.state";
 interface AddMemberModalProps {
 	open: boolean;
 	onClose: () => void;
-	confirmMember: (amount: string) => void;
+	confirmMember: (amount: number) => void;
 }
 
 export const AddMemberModal: React.FC<AddMemberModalProps> = ({ open, onClose, confirmMember }) => {
@@ -32,14 +32,15 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({ open, onClose, c
 					onChange={(e) => setMember(e.currentTarget.value)}
 					margin="dense"
 					id="name"
-					label="Member"
+					type="number"
+					label="Source"
 					fullWidth
 					variant="standard"
 				/>
 			</DialogContent>
 			<DialogActions>
 				<Button variant="outlined" onClick={handleOnClose}>Cancel</Button>
-				<Button variant="contained" onClick={() => confirmMember(member)} disabled={isDisabled}>Confirm</Button>
+				<Button variant="contained" onClick={() => confirmMember(parseInt(member, 10))} disabled={isDisabled}>Confirm</Button>
 			</DialogActions>
 		</Dialog>
 	)

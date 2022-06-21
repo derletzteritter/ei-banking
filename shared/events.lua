@@ -13,7 +13,11 @@ EiBankingEvents = {
 	TransferMoneySuccess = 'ei-banking:transferMoneySuccess',
 	TransferMoneyBroadcast = 'ei-banking:transferBroadcast',
 	SetNotification = 'ei-banking:setNotification',
-	AddMemeber = 'ei-banking:addAccountMember',
-	RemoveMember = 'ei-banking:removeAccoutMember',
-	UpdateMemberPermissions = 'ei-banking:updateMemberPermissions'
+	AddMember = 'ei-banking:addAccountMember',
+	AddMemberSuccess = 'ei-banking:addAccountMemberSuccess',
+	AddMemberFailed = 'ei-baking:addAccountMemberFailed',
+	RemoveMember = 'ei-banking:removeAccountMember',
+	UpdateMemberPermissions = 'ei-banking:updateMemberPermissions',
+	GetMembers = 'ei-banking:getMembers',
+	GetMembersSuccess = 'ei-banking:getMembersSuccess'
 }

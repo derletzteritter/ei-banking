@@ -8,11 +8,13 @@ import { Account } from "../../types/account";
 import SidebarHeader from "./SidebarHeader";
 import NewAccountButton from "./components/NewAccountButton";
 import NewAccountModal from "./components/NewAccountModal";
+import { useMemberAPI } from "../Members/hooks/useMemberAPI";
 
 const Accounts: React.FC = () => {
 	const accounts = useFilteredAccountsValue();
 	const setActiveAccount = useSetActiveAccount();
 	const [newAccountModal, setNewAccountModal] = useState<boolean>(false);
+	const { getMembers } = useMemberAPI();
 	
 	const { getDefaultAccount } = useAccountsActions();
 	
@@ -24,8 +26,9 @@ const Accounts: React.FC = () => {
 	const handleChangeAccounts = useCallback(
 		(account: Account) => {
 			setActiveAccount(account);
+			getMembers(account.id);
 		},
-		[setActiveAccount],
+		[setActiveAccount, getMembers],
 	);
 	
 	const toggleAccountModal = () => {

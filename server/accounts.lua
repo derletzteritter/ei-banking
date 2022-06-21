@@ -2,6 +2,19 @@ local QBCore = exports['qb-core']:GetCoreObject()
 
 -- Welcome to hell, enter with caution.
 
+RegisterNetEvent('ei-banking:getCredentials')
+AddEventHandler('ei-banking:getCredentials', function()
+	local src = source
+	local player = QBCore.Functions.GetPlayer(src)
+
+	local data = {
+		charName = "" .. player.PlayerData.charinfo.firstname .. " " .. player.PlayerData.charinfo.lastname,
+		citizenId = player.PlayerData.citizenid
+	}
+
+	TriggerClientEvent('ei-banking:onCredentials', src, data)
+end)
+
 RegisterNetEvent('QBCore:Server:PlayerLoaded')
 AddEventHandler('QBCore:Server:PlayerLoaded', function(player)
 	GetOrCreateDefaultAccount(player.PlayerData)

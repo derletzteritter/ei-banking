@@ -5,8 +5,13 @@ end
 
 RegisterCommand('show-nui', function()
 	toggleNuiFrame(true)
-	SendReactMessage('ei-banking:setCredentials', { charName = "Chip Chipperson" })
+	TriggerServerEvent('ei-banking:getCredentials')
 	TriggerServerEvent(EiBankingEvents.SyncDefaultAccount)
+end)
+
+RegisterNetEvent('ei-banking:onCredentials', function(data)
+	print(json.encode(data))
+	SendReactMessage('ei-banking:setCredentials', data)
 end)
 
 RegisterNUICallback('hideFrame', function(_, cb)
@@ -70,4 +75,24 @@ end)
 RegisterNetEvent(EiBankingEvents.TransferMoneyBroadcast)
 AddEventHandler(EiBankingEvents.TransferMoneyBroadcast, function(data)
 	SendReactMessage(EiBankingEvents.TransferMoneyBroadcast, data)
+end)
+
+RegisterNUICallback(EiBankingEvents.AddMember, function(data, cb)
+	TriggerServerEvent(EiBankingEvents.AddMember, data)
+
+	RegisterNetEvent(EiBankingEvents.AddMemberSuccess, function(data)
+		cb({ status = "ok", data = data })
+	end)
+
+	RegisterNetEvent(EiBankingEvents.AddMemberFailed, function(data)
+		cb({ status = "error", data = data })
+	end)
+end)
+
+RegisterNUICallback(EiBankingEvents.GetMembers, function(data, cb)
+	TriggerServerEvent(EiBankingEvents.GetMembers, data)
+
+	RegisterNetEvent(EiBankingEvents.GetMembersSuccess, function(members)
+		cb({ status = 'ok', data = members })
+	end)
 end)
