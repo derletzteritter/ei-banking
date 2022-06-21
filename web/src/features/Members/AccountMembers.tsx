@@ -5,25 +5,6 @@ import { useMemberAPI } from './hooks/useMemberAPI';
 import { useMembersValue } from "./state/members.state";
 import { useCredentialsValue } from "../../state/player.state";
 
-const membersMock = [
-    {
-        id: 1,
-        name: "Rick",
-        citizenId: "324dsd",
-        canDeposit: false,
-        canWithdraw: true,
-        canTransfer: false,
-    },
-    {
-        id: 1,
-        name: "Taso",
-        citizenId: "welku7",
-        canDeposit: true,
-        canWithdraw: false,
-        canTransfer: true,
-    },
-]
-
 const AccountMembers = () => {
     const { updateAccountMember } = useMemberAPI();
     const membersValue = useMembersValue();

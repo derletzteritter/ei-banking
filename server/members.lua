@@ -12,12 +12,7 @@ AddEventHandler(EiBankingEvents.GetMembers, function(data)
 
 	for k, v in pairs(members) do
 		local memberData = QBCore.Functions.GetOfflinePlayerByCitizenId(v.citizenId)
-
 		v["name"] = "" .. memberData.PlayerData.charinfo.firstname .. " " .. memberData.PlayerData.charinfo.lastname
-		for i, m in pairs(v) do
-			print("member", i, m)
-		end
-
 		formattedMembers[k] = v
 	end
 
@@ -26,9 +21,6 @@ end)
 
 RegisterNetEvent(EiBankingEvents.AddMember)
 AddEventHandler(EiBankingEvents.AddMember, function(data)
-	print("Add member event", data.memberSource)
-	print("Add member - account id", data.accountId)
-
 	local src = source
 
 	if (src == data.memberSource) then
@@ -40,7 +32,6 @@ AddEventHandler(EiBankingEvents.AddMember, function(data)
 
 	if member ~= nil then
 		local query = "INSERT INTO custom_bank_accounts_members (account_id, citizen_id) VALUES (?, ?)"
-
 		MySQL.insert.await(query, { data.accountId, member.PlayerData.citizenid })
 
 		local memberData = QBCore.Functions.GetPlayerByCitizenId(member.PlayerData.citizenid)
@@ -73,5 +64,9 @@ end)
 
 RegisterNetEvent(EiBankingEvents.UpdateMemberPermissions)
 AddEventHandler(EiBankingEvents.UpdateMemberPermissions, function(data)
+	local accountId = data.accountId
+	local memberId = data.memberId
 
+	local query = "UPDATE custom_bank_accounts_members SET can_deposit = ?, can_withdraw = ?, can_transfer = ? WHERE account_id = ? AND citizen_id = ?"
+	MySQL.update.await(query, { data.canDeposit, data.canWithdraw, data.canTransfer, accountId, memberId })
 end)
