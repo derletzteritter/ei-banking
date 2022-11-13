@@ -148,7 +148,7 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 		if sourceAccount.isDefault == 1 then
 			player.Functions.RemoveMoney('bank', tonumber(transfer.amount))
 			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { player.PlayerData.money['bank'], tonumber(sourceAccount.id) })
-		elseif sourceAccount.isDefault == false then
+		elseif sourceAccount.isDefault == 0 then
 			-- update custom account with new balance
 			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, tonumber(sourceAccount.id) })
 		end
@@ -169,14 +169,14 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 			if targetPlayer ~= nil then
 				targetPlayer.Functions.AddMoney('bank', tonumber(transfer.amount))
 
-				TriggerClientEvent(EiBankingEvents.TransferMoneyBroadcast, targetPlayer.PlayerData.source, { accountId = targetAccount.id or targetAccount, newBalance = targetPlayer.PlayerData.money['bank'] })
 				MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { targetPlayer.PlayerData.money['bank'], targetAccount.id or targetAccount })
+				TriggerClientEvent(EiBankingEvents.TransferMoneyBroadcast, targetPlayer.PlayerData.source, { accountId = targetAccount.id or targetAccount, newBalance = targetPlayer.PlayerData.money['bank'] })
 			else
 				-- We don't actually have to update the custom bank. It will sync once the target player connects.
 				local balance = GetDefaultBankAmountFromCitizenId(participants[1].citizenId)
-				local query = "UPDATE players SET money = JSON_SET(money, '$.bank', " .. tonumber(balance) .. ")"
+				local query = "UPDATE players SET money = JSON_SET(money, '$.bank', ?)"
 
-				MySQL.query.await(query)
+				MySQL.query.await(query, tonumber(balance))
 			end
 		end
 

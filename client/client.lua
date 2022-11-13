@@ -74,6 +74,7 @@ end)
 
 RegisterNetEvent(EiBankingEvents.TransferMoneyBroadcast)
 AddEventHandler(EiBankingEvents.TransferMoneyBroadcast, function(data)
+	print(json.encode(data))
 	SendReactMessage(EiBankingEvents.TransferMoneyBroadcast, data)
 end)
 
