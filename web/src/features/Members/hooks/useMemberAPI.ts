@@ -8,12 +8,25 @@ export const useMemberAPI = () => {
 	const setMembers = useSetMembersState();
 	
 	const updateAccountMember = (data: any) => {
-		fetchNui('ei-banking:updateAccountMember', data).then((resp) => {
+		fetchNui('ei-banking:updateMemberPermissions', data).then((resp) => {
 			if (resp.status !== 'ok') {
-			
+				return enqueueSnackbar("Failed to update member")
 			}
-			
-			// do some stuff
+
+			console.log("updating member resp data", resp.data)
+
+			setMembers((curVal) => curVal.map((member) => {
+					if (member.citizen === resp.data.citizenid) {
+						return {
+							...member,
+							canDeposit: resp.data.canDeposit,
+							canWithdraw: resp.data.canWithdraw,
+							canTransfer: resp.data.canTransfer,
+						}
+					}
+
+					return member;
+			}))
 		})
 	}
 	
@@ -24,6 +37,7 @@ export const useMemberAPI = () => {
 			}
 			
 			// do some stuff
+			setMembers((curVal) => [...curVal, resp.data])
 		})
 	}
 	

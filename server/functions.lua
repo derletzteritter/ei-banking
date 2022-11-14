@@ -1,3 +1,5 @@
+local QBCore = exports['qb-core']:GetCoreObject()
+
 function GetOrCreateDefaultAccount(playerData)
 	local bankAmount = playerData.money['bank']
 	local citizenId = playerData.citizenid
@@ -38,4 +40,19 @@ function GetCustomAccount(accountId)
 	local account = MySQL.query.await(query, { accountId })
 
 	return account[1]
+end
+
+
+function GetAccountMember(accountId, citizenId)
+	local memberQuery = "SELECT * FROM custom_bank_accounts_members WHERE account_id = ? AND citizen_id = ?"
+	local newMember = MySQL.query.await(memberQuery, { accountId, citizenId })
+
+	local respObj = {
+		citizenId = citizenId,
+		canDeposit = newMember[1].can_deposit,
+		canWithdraw = newMember[1].can_withdraw,
+		canTransfer = newMember[1].can_transfer,
+	}
+
+	return respObj
 end

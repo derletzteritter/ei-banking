@@ -23,12 +23,12 @@ RegisterNetEvent(EiBankingEvents.AddMember)
 AddEventHandler(EiBankingEvents.AddMember, function(data)
 	local src = source
 
-	if (src == data.memberSource) then
+	if (src == data.member) then
 		TriggerClientEvent(EiBankingEvents.AddMemberFailed, src, { message = "You cannot add yourself to the account!" })
 		return
 	end
 
-	local member = QBCore.Functions.GetPlayer(data.memberSource)
+	local member = QBCore.Functions.GetPlayer(data.member)
 
 	if member ~= nil then
 		local query = "INSERT INTO custom_bank_accounts_members (account_id, citizen_id) VALUES (?, ?)"
@@ -49,14 +49,12 @@ AddEventHandler(EiBankingEvents.AddMember, function(data)
 
 		TriggerClientEvent(EiBankingEvents.AddMemberSuccess, src, respObj)
 	else
-		TriggerClientEvent(EiBankingEvents.AddMemberFailed, src, { message = "Could not find any online player with the source [" .. data.memberSource .. "]!" })
+		TriggerClientEvent(EiBankingEvents.AddMemberFailed, src, { message = "Could not find any online player with the source/identifier [" .. data.member .. "]!" })
 	end
 end)
 
 RegisterNetEvent(EiBankingEvents.RemoveMember)
 AddEventHandler(EiBankingEvents.RemoveMember, function(member)
-	print(member)
-
 	local query = "DELETE FROM custom_bank_accounts_members WHERE account_id = ? AND citizen_id = ?"
 
 	MySQL.query.await(query, { member.accountId, member.citizenId })
@@ -64,9 +62,12 @@ end)
 
 RegisterNetEvent(EiBankingEvents.UpdateMemberPermissions)
 AddEventHandler(EiBankingEvents.UpdateMemberPermissions, function(data)
-	local accountId = data.accountId
-	local memberId = data.memberId
+	local src = source
 
 	local query = "UPDATE custom_bank_accounts_members SET can_deposit = ?, can_withdraw = ?, can_transfer = ? WHERE account_id = ? AND citizen_id = ?"
-	MySQL.update.await(query, { data.canDeposit, data.canWithdraw, data.canTransfer, accountId, memberId })
+	MySQL.update.await(query, { data.canDeposit, data.canWithdraw, data.canTransfer, data.accountId, data.memberId })
+
+	local updatedMember = GetAccountMember(data.accountId, data.memberId)
+
+	TriggerClientEvent(EiBankingEvents.UpdateMemberPermissionsSuccess, src, updatedMember)
 end)

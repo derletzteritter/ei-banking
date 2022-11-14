@@ -7,6 +7,7 @@ import {
   FormControlLabel,
   Button,
 } from "@mui/material";
+import { useActiveAccountValue } from "../Accounts/state/accounts.state";
 
 interface MemberProps {
   member: any;
@@ -17,9 +18,10 @@ const Member: React.FC<MemberProps> = ({ member, updateMember }) => {
     const [canDeposit, setCanDeposit] = useState(member.canDeposit);
     const [canWithdraw, setCanWithdraw] = useState(member.canWithdraw);
     const [canTransfer, setCanTransfer] = useState(member.canTransfer);
+    const account = useActiveAccountValue()
 
     const handleUpdate = () => {
-        const data = { canDeposit, canWithdraw, canTransfer }
+        const data = { canDeposit, canWithdraw, canTransfer, memberId: member.citizenId, accountId: account.id }
         updateMember(data)
     }
 

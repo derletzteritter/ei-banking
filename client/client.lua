@@ -97,3 +97,11 @@ RegisterNUICallback(EiBankingEvents.GetMembers, function(data, cb)
 		cb({ status = 'ok', data = members })
 	end)
 end)
+
+RegisterNUICallback(EiBankingEvents.UpdateMemberPermissions, function(data, cb)
+	TriggerServerEvent(EiBankingEvents.UpdateMemberPermissions, data)
+
+	RegisterNetEvent(EiBankingEvents.UpdateMemberPermissionsSuccess, function(updatedMembers)
+		cb({ status = "ok", data = updatedMembers })
+	end)
+end)

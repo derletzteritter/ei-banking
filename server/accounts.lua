@@ -136,7 +136,7 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 
 	local sourceAccount = transfer.sourceAccount
 
-	-- this can either just be a uid (string) or a account table
+	-- this can either just be a uid (string) or an account table
 	local targetAccount = transfer.targetAccount
 
 	local participants = GetParticipantsFromAccountId(targetAccount.id or targetAccount)
@@ -147,6 +147,9 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 		-- if sourceAccount is default
 		if sourceAccount.isDefault == 1 then
 			player.Functions.RemoveMoney('bank', tonumber(transfer.amount))
+
+			local player = QBCore.Functions.GetPlayer(src)
+
 			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { player.PlayerData.money['bank'], tonumber(sourceAccount.id) })
 		elseif sourceAccount.isDefault == 0 then
 			-- update custom account with new balance
