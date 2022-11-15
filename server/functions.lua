@@ -42,7 +42,6 @@ function GetCustomAccount(accountId)
 	return account[1]
 end
 
-
 function GetAccountMember(accountId, citizenId)
 	local memberQuery = "SELECT * FROM custom_bank_accounts_members WHERE account_id = ? AND citizen_id = ?"
 	local newMember = MySQL.query.await(memberQuery, { accountId, citizenId })

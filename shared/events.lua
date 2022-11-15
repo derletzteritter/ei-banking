@@ -17,6 +17,7 @@ EiBankingEvents = {
 	AddMemberSuccess = 'ei-banking:addAccountMemberSuccess',
 	AddMemberFailed = 'ei-baking:addAccountMemberFailed',
 	RemoveMember = 'ei-banking:removeAccountMember',
+	RemoveMemberSuccess = 'ei-banking:removeAccountMemberSuccess',
 	UpdateMemberPermissions = 'ei-banking:updateMemberPermissions',
 	UpdateMemberPermissionsSuccess = 'ei-banking:updateMemberPermissionsSuccess',
 	GetMembers = 'ei-banking:getMembers',

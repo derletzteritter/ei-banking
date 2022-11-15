@@ -105,3 +105,12 @@ RegisterNUICallback(EiBankingEvents.UpdateMemberPermissions, function(data, cb)
 		cb({ status = "ok", data = updatedMembers })
 	end)
 end)
+
+RegisterNUICallback(EiBankingEvents.RemoveMember, function(data, cb)
+	TriggerServerEvent(EiBankingEvents.RemoveMember, data)
+	
+	
+	RegisterNetEvent(EiBankingEvents.RemoveMemberSuccess, function(removedMember)
+		cb({ status = "ok", data = removedMember })
+	end)
+end)

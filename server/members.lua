@@ -55,9 +55,12 @@ end)
 
 RegisterNetEvent(EiBankingEvents.RemoveMember)
 AddEventHandler(EiBankingEvents.RemoveMember, function(member)
+	local src = source
 	local query = "DELETE FROM custom_bank_accounts_members WHERE account_id = ? AND citizen_id = ?"
 
-	MySQL.query.await(query, { member.accountId, member.citizenId })
+	MySQL.query.await(query, { member.accountId, member.citizenId });
+
+	TriggerClientEvent(EiBankingEvents.AddMemberSuccess, src, { memberId = member.citizenId, accountId = member.accountId })
 end)
 
 RegisterNetEvent(EiBankingEvents.UpdateMemberPermissions)

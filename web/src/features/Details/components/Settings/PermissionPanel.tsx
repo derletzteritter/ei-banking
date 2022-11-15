@@ -17,6 +17,7 @@ const PermissionPanel: React.FC = () => {
 	const handleConfirmMember = (member: number) => {
 		createAccountMember({ member: member, accountId: activeAccount.id })
 	}
+
 	
 	return (
 		<Box>

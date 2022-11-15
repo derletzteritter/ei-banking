@@ -6,7 +6,7 @@ import { useMembersValue } from "./state/members.state";
 import { useCredentialsValue } from "../../state/player.state";
 
 const AccountMembers = () => {
-    const { updateAccountMember } = useMemberAPI();
+    const { updateAccountMember, deleteAccountMember } = useMemberAPI();
     const membersValue = useMembersValue();
     const player = useCredentialsValue();
 
@@ -14,12 +14,17 @@ const AccountMembers = () => {
         updateAccountMember(data)
     }, [updateAccountMember])
     
+    
+	const handleDeleteMember = (member: any) => {
+		deleteAccountMember(member)
+	}
+    
     if (!membersValue) return null;
 
     return (
         <Box>
             {membersValue.filter((b) => b.citizenId !== player.citizenId).map((member: any) => (
-                <Member key={member.citizenId} member={member} updateMember={handleUpdateMember} />
+                <Member key={member.citizenId} member={member} updateMember={handleUpdateMember} deleteMember={handleDeleteMember} />
             ))}
         </Box>
     )

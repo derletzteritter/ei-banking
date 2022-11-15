@@ -12,9 +12,10 @@ import { useActiveAccountValue } from "../Accounts/state/accounts.state";
 interface MemberProps {
   member: any;
   updateMember: (data: any) => void;
+  deleteMember: (data: any) => void;
 }
 
-const Member: React.FC<MemberProps> = ({ member, updateMember }) => {
+const Member: React.FC<MemberProps> = ({ member, updateMember, deleteMember }) => {
     const [canDeposit, setCanDeposit] = useState(member.canDeposit);
     const [canWithdraw, setCanWithdraw] = useState(member.canWithdraw);
     const [canTransfer, setCanTransfer] = useState(member.canTransfer);
@@ -23,6 +24,10 @@ const Member: React.FC<MemberProps> = ({ member, updateMember }) => {
     const handleUpdate = () => {
         const data = { canDeposit, canWithdraw, canTransfer, memberId: member.citizenId, accountId: account.id }
         updateMember(data)
+    }
+
+    const handleDelete = () => { 
+      deleteMember({ memberId: member.citizenId })
     }
 
   return (
@@ -41,6 +46,9 @@ const Member: React.FC<MemberProps> = ({ member, updateMember }) => {
         <Box mt={1}>
           <Button onClick={handleUpdate} size="small" variant="outlined">
             Update
+          </Button>
+          <Button onClick={handleDelete} size="small" variant="outlined">
+            Delete 
           </Button>
         </Box>
       </Box>

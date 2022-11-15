@@ -13,10 +13,8 @@ export const useMemberAPI = () => {
 				return enqueueSnackbar("Failed to update member")
 			}
 
-			console.log("updating member resp data", resp.data)
-
 			setMembers((curVal) => curVal.map((member) => {
-					if (member.citizen === resp.data.citizenid) {
+					if (member.citizenid === resp.data.citizenid) {
 						return {
 							...member,
 							canDeposit: resp.data.canDeposit,
@@ -42,12 +40,12 @@ export const useMemberAPI = () => {
 	}
 	
 	const deleteAccountMember = (data: any) => {
-		fetchNui('ei-banking:deleteAccountMember', data).then((resp) => {
+		fetchNui('ei-banking:removeAccountMember', data).then((resp) => {
 			if (resp.status !== 'ok') {
-			
+				return enqueueSnackbar("Failed to remove member.", { variant: 'error' })
 			}
 			
-			// do some stuff
+			setMembers((curVal) => [...curVal].filter((member) => member.citizenid !== resp.data.memberId))
 		})
 	}
 	
@@ -64,5 +62,5 @@ export const useMemberAPI = () => {
 		})
 	}, [setMembers])
 	
-	return { updateAccountMember, createAccountMember, getMembers }
+	return { updateAccountMember, createAccountMember, getMembers, deleteAccountMember }
 }
