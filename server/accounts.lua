@@ -27,7 +27,7 @@ AddEventHandler(EiBankingEvents.GetAccounts, function()
 	local player = QBCore.Functions.GetPlayer(src)
 	local citizen_id = player.PlayerData.citizenid
 
-	MySQL.query("SELECT custom_bank_accounts.id, custom_bank_accounts.is_default as isDefault, custom_bank_accounts.balance, custom_bank_accounts.type, custom_bank_accounts.name as accountName FROM custom_bank_accounts INNER JOIN custom_bank_accounts_members on custom_bank_accounts.id = custom_bank_accounts_members.account_id WHERE custom_bank_accounts_members.citizen_id = ?", { citizen_id },
+	MySQL.query("SELECT custom_bank_accounts.id, custom_bank_accounts.is_default as isDefault, custom_bank_accounts.balance, custom_bank_accounts_members.type AS type, custom_bank_accounts.name as accountName FROM custom_bank_accounts INNER JOIN custom_bank_accounts_members on custom_bank_accounts.id = custom_bank_accounts_members.account_id WHERE custom_bank_accounts_members.citizen_id = ?", { citizen_id },
 		function(result)
 			TriggerClientEvent(EiBankingEvents.SendAccounts, src, result)
 		end)
@@ -42,10 +42,10 @@ AddEventHandler(EiBankingEvents.CreateAccount, function(accountData)
 	local InsertId
 
 	-- Insert account
-	MySQL.insert("INSERT INTO custom_bank_accounts (name, type, balance, is_default) VALUES (?, ?, ?, ?)", { accountData.name, "personal", 0, false }, function(insertId)
+	MySQL.insert("INSERT INTO custom_bank_accounts (name, balance, is_default) VALUES (?, ?, ?)", { accountData.name, 0, false }, function(insertId)
 		InsertId = insertId
-		MySQL.insert("INSERT INTO custom_bank_accounts_members (account_id, citizen_id) VALUES (?, ?)", { insertId, citizen_id }, function(insertId)
-			MySQL.query("SELECT custom_bank_accounts.id, custom_bank_accounts.is_default as isDefault, custom_bank_accounts.balance, custom_bank_accounts.type, custom_bank_accounts.name as accountName FROM custom_bank_accounts INNER JOIN custom_bank_accounts_members on custom_bank_accounts.id = custom_bank_accounts_members.account_id WHERE custom_bank_accounts_members.citizen_id = ? AND custom_bank_accounts_members.account_id = ?", { citizen_id, InsertId }, function(result)
+		MySQL.insert("INSERT INTO custom_bank_accounts_members (account_id, citizen_id, type) VALUES (?, ?,?)", { insertId, "personal", citizen_id }, function(insertId)
+			MySQL.query("SELECT custom_bank_accounts.id, custom_bank_accounts.is_default as isDefault, custom_bank_accounts.balance, custom_bank_accounts_members.type AS type, custom_bank_accounts.name as accountName FROM custom_bank_accounts INNER JOIN custom_bank_accounts_members on custom_bank_accounts.id = custom_bank_accounts_members.account_id WHERE custom_bank_accounts_members.citizen_id = ? AND custom_bank_accounts_members.account_id = ?", { citizen_id, InsertId }, function(result)
 				TriggerClientEvent(EiBankingEvents.CreateAccountSuccess, src, result[1])
 			end)
 		end)
@@ -56,6 +56,14 @@ RegisterNetEvent(EiBankingEvents.DepositMoney)
 AddEventHandler(EiBankingEvents.DepositMoney, function(deposit)
 	local src = source
 	local player = QBCore.Functions.GetPlayer(src)
+	if deposit.account.type == "shared" then
+		local member = GetAccountMember(deposit.account.id, player.PlayerData.citizenid)	
+		if (member.canDeposit == 0) then
+			TriggerClientEvent(EiBankingEvents.SetNotification, src, { type = "error", message = "You don't have permission to deposit to this account."})
+			return
+		end
+	end
+
 	local currentCash = player.PlayerData.money['cash']
 	local currentBank = player.PlayerData.money['bank']
 
@@ -88,6 +96,14 @@ RegisterNetEvent(EiBankingEvents.WithdrawMoney)
 AddEventHandler(EiBankingEvents.WithdrawMoney, function(withdraw)
 	local src = source
 	local player = QBCore.Functions.GetPlayer(src)
+
+	if withdraw.account.type == "shared" then
+		local member = GetAccountMember(withdraw.account.id, player.PlayerData.citizenid)	
+		if (member.canDeposit == 0) then
+			TriggerClientEvent(EiBankingEvents.SetNotification, src, { type = "error", message = "You don't have permission to withdraw from this account."})
+			return
+		end
+	end
 	local currentBank = player.PlayerData.money['bank']
 
 	if withdraw.amount <= currentBank then
@@ -133,14 +149,25 @@ RegisterNetEvent(EiBankingEvents.TransferMoney)
 AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 	local src = source
 	local player = QBCore.Functions.GetPlayer(src)
+	if transfer.sourceAccount.type == "shared" then
+		local member = GetAccountMember(transfer.sourceAccount..id, player.PlayerData.citizenid)	
+		if (member.canDeposit == 0) then
+			TriggerClientEvent(EiBankingEvents.SetNotification, src, { type = "error", message = "You don't have permission to transfer from this account."})
+			return
+		end
+	end
+	
 
 	local sourceAccount = transfer.sourceAccount
-
 	-- this can either just be a uid (string) or an account table
 	local targetAccount = transfer.targetAccount
 
 	local participants = GetParticipantsFromAccountId(targetAccount.id or targetAccount)
 
+	if sourceAccount.balance < transfer.amount or transfer.amount == 0 then
+		TriggerClientEvent(EiBankingEvents.TransferMoneyFailed, src, { errorMessage = "You do not have enough money"})
+		return
+	end
 	-- We also need to get the acccount, if we just have an accountId
 	if sourceAccount.balance >= transfer.amount then
 		local newBalance = tonumber(sourceAccount.balance) - tonumber(transfer.amount)
@@ -157,23 +184,20 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 		end
 		-- update source account
 		TriggerClientEvent(EiBankingEvents.TransferMoneySuccess, src, newBalance)
-
-		-- custom account
 		--  check of default account
 		--  is the player online
 		--    if so, we need to update with qbcore aswell
-
-
 		if targetAccount.isDefault == 1 then
 			-- Default, so we don't care about the other participants, since there aren't any
 			-- targetPlayer is the source, if the player is online
 			local targetPlayer = QBCore.Functions.GetPlayerByCitizenId(participants[1].citizenId)
-			print("We have a target player", targetPlayer.PlayerData.source)
-			if targetPlayer ~= nil then
-				targetPlayer.Functions.AddMoney('bank', tonumber(transfer.amount))
 
-				MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { targetPlayer.PlayerData.money['bank'], targetAccount.id or targetAccount })
-				TriggerClientEvent(EiBankingEvents.TransferMoneyBroadcast, targetPlayer.PlayerData.source, { accountId = targetAccount.id or targetAccount, newBalance = targetPlayer.PlayerData.money['bank'] })
+			if targetPlayer ~= nil then
+				local newBalance = targetPlayer.PlayerData.money.bank + transfer.amount
+				targetPlayer.Functions.AddMoney('bank', transfer.amount)
+
+				MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, targetAccount.id or targetAccount })
+				TriggerClientEvent(EiBankingEvents.TransferMoneyBroadcast, targetPlayer.PlayerData.source, { accountId = targetAccount.id or targetAccount, newBalance = newBalance })
 			else
 				-- We don't actually have to update the custom bank. It will sync once the target player connects.
 				local balance = GetDefaultBankAmountFromCitizenId(participants[1].citizenId)
@@ -185,7 +209,6 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 
 		if targetAccount.isDefault == 0 then
 			local targetPlayer = QBCore.Functions.GetPlayerByCitizenId(participants[1].citizenId)
-			print("We have a target player", targetPlayer.PlayerData.source)
 
 			local customAccount = GetCustomAccount(targetAccount.id or targetAccount)
 			local newTargetBalance = tonumber(customAccount.balance) + tonumber(transfer.amount)
@@ -195,7 +218,5 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 		end
 	end
 end)
-
-
 
 

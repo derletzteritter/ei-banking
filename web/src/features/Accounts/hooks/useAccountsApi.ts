@@ -45,6 +45,10 @@ export const useAccountsApi = () => {
 			targetAccount,
 			amount: parseInt(amount, 10)
 		}).then((resp) => {
+			if (resp.status !== 'ok') {
+				return enqueueSnackbar(resp.data.errorMessage, { variant: 'error' })
+			}
+			
 			let targetAccountName;
 			if (typeof targetAccount !== "string") {
 				targetAccountName = targetAccount.accountName;

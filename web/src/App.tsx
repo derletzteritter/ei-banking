@@ -10,6 +10,7 @@ import AccountDetails from "./features/Details/AccountDetails";
 import { useNuiEvent } from "./hooks/useNuiEvent";
 import { useAccountListener } from "./features/Accounts/hooks/useAccountListener";
 import { SnackbarProvider } from "notistack";
+import { useNotificationService } from "./notifications/useNotificationService";
 
 
 debugData([
@@ -24,6 +25,7 @@ const App: React.FC = () => {
 	
 	usePlayerService();
 	useAccountListener();
+	useNotificationService();
 	
 	useNuiEvent('setVisible', (show) => {
 		setVisible(show);
@@ -34,13 +36,6 @@ const App: React.FC = () => {
 			{visible && (
 				<BankWrapper>
 					<BankContainer>
-						<SnackbarProvider
-							autoHideDuration={4000}
-							anchorOrigin={{
-								horizontal: "left",
-								vertical: "bottom"
-							}}
-						>
 							<Grid container>
 								<Grid item sm={5} md={4} lg={3}>
 									<React.Suspense fallback={<CircularProgress/>}>
@@ -53,7 +48,6 @@ const App: React.FC = () => {
 									</React.Suspense>
 								</Grid>
 							</Grid>
-						</SnackbarProvider>
 					</BankContainer>
 				</BankWrapper>
 			)}

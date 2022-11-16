@@ -48,6 +48,13 @@ AddEventHandler(EiBankingEvents.AddMember, function(data)
 		}
 
 		TriggerClientEvent(EiBankingEvents.AddMemberSuccess, src, respObj)
+
+		MySQL.query("SELECT custom_bank_accounts.id, custom_bank_accounts.is_default as isDefault, custom_bank_accounts.balance, custom_bank_accounts.type, custom_bank_accounts.name as accountName FROM custom_bank_accounts INNER JOIN custom_bank_accounts_members on custom_bank_accounts.id = custom_bank_accounts_members.account_id WHERE custom_bank_accounts_members.citizen_id = ? AND custom_bank_accounts.id = ?", { member.PlayerData.citizenid, data.accountId },
+			function(result)
+				print("new account")
+				print(json.encode(result))
+				TriggerClientEvent(EiBankingEvents.AddMemberBroadcast, member.PlayerData.source, result[1])
+			end)
 	else
 		TriggerClientEvent(EiBankingEvents.AddMemberFailed, src, { message = "Could not find any online player with the source/identifier [" .. data.member .. "]!" })
 	end

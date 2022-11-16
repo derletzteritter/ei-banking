@@ -5,7 +5,7 @@ import { useAccountsActions } from "./useAccountsActions";
 
 export const useAccountListener = () => {
 	const setAccounts = useSetAccounts();
-	const { updateAccountBalance } = useAccountsActions();
+	const { updateAccountBalance, createLocalAccount } = useAccountsActions();
 	
 	useNuiEvent("SyncDefaultAccount", (newBalance) => {
 		// eslint-disable-next-line array-callback-return
@@ -23,5 +23,10 @@ export const useAccountListener = () => {
 	
 	useNuiEvent('ei-banking:transferBroadcast', ({ accountId, newBalance }) => {
 		updateAccountBalance(accountId, newBalance);
+	})
+	
+	useNuiEvent('ei-banking:addMemberBroadcast', (account) => {
+		console.log("HELLO NEW ACCOUNT", account)
+		createLocalAccount(account)
 	})
 }
