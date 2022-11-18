@@ -87,6 +87,8 @@ AddEventHandler(EiBankingEvents.DepositMoney, function(deposit)
 
 			TriggerClientEvent(EiBankingEvents.DepositMoneySuccess, src, newBalance)
 		end
+
+		CreateTransaction(deposit.amount, deposit.account.id, deposit.account.id, "deposit")
 	else
 		print("We do not have enough money")
 	end
@@ -127,6 +129,8 @@ AddEventHandler(EiBankingEvents.WithdrawMoney, function(withdraw)
 
 			TriggerClientEvent(EiBankingEvents.WithdrawMoneySuccess, src, newBalance)
 		end
+
+		CreateTransaction(withdraw.amount, withdraw.account.id, withdraw.account.id, "withdraw")
 	else
 		print("Not enough money")
 	end
@@ -216,6 +220,8 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 			TriggerClientEvent(EiBankingEvents.TransferMoneyBroadcast, targetPlayer.PlayerData.source, { accountId = targetAccount.id or targetAccount, newBalance = newTargetBalance })
 			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newTargetBalance, targetAccount.id or targetAccount })
 		end
+
+		CreateTransaction(transfer.amount, targetAccount.id, sourceAccount.id, "transfer")
 	end
 end)
 

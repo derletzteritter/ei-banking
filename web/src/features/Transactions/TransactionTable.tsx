@@ -44,7 +44,7 @@ export const TransactionTable = () => {
               <TableCell>Amount</TableCell>
               <TableCell align="right">To</TableCell>
               <TableCell align="right">From</TableCell>
-              <TableCell align="right">Message</TableCell>
+              <TableCell align="right">Date</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
