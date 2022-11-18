@@ -69,6 +69,9 @@ AddEventHandler(EiBankingEvents.DepositMoney, function(deposit)
 
 	if currentCash >= deposit.amount then
 		-- If we have enough cash
+		
+		local newBalance = deposit.account.balance + deposit.amount
+
 		if deposit.account.isDefault == 1 then
 			local newBalance = tonumber(currentBank) + tonumber(deposit.amount)
 			player.Functions.RemoveMoney('cash', tonumber(deposit.amount))
@@ -81,14 +84,21 @@ AddEventHandler(EiBankingEvents.DepositMoney, function(deposit)
 
 			TriggerClientEvent(EiBankingEvents.DepositMoneySuccess, src, newBalance)
 		else
-			local newBalance = deposit.account.balance + deposit.amount
 
 			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newBalance, deposit.account.id })
 
 			TriggerClientEvent(EiBankingEvents.DepositMoneySuccess, src, newBalance)
 		end
 
-		CreateTransaction(deposit.amount, deposit.account.id, deposit.account.id, "deposit")
+		local transaction = CreateTransaction(deposit.amount, deposit.account.id, deposit.account.id, "deposit")
+		local participants = GetParticipantsFromAccountId(deposit.account.id)
+		for k,v in pairs(participants) do
+			local player = QBCore.Functions.GetPlayerByCitizenId(v)
+			
+			if player ~= nil then
+				TriggerClientEvent(EiBankingEvents.TransactionBroadcast, player.PlayerData.source, { accountId = deposit.account.id, transaction = transaction })
+			end
+		end
 	else
 		print("We do not have enough money")
 	end
@@ -130,7 +140,15 @@ AddEventHandler(EiBankingEvents.WithdrawMoney, function(withdraw)
 			TriggerClientEvent(EiBankingEvents.WithdrawMoneySuccess, src, newBalance)
 		end
 
-		CreateTransaction(withdraw.amount, withdraw.account.id, withdraw.account.id, "withdraw")
+		local transaction = CreateTransaction(withdraw.amount, withdraw.account.id, withdraw.account.id, "withdraw")
+		local participants = GetParticipantsFromAccountId(withdraw.account.id)
+		for k,v in pairs(participants) do
+			local player = QBCore.Functions.GetPlayerByCitizenId(v)
+			
+			if player ~= nil then
+				TriggerClientEvent(EiBankingEvents.TransactionBroadcast, player.PlayerData.source, { accountId = withdraw.account.id, transaction = transaction })
+			end
+		end
 	else
 		print("Not enough money")
 	end
@@ -221,8 +239,6 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 			MySQL.query.await("UPDATE custom_bank_accounts SET balance = ? WHERE id = ?", { newTargetBalance, targetAccount.id or targetAccount })
 		end
 
-		CreateTransaction(transfer.amount, targetAccount.id, sourceAccount.id, "transfer")
+		local transaction = CreateTransaction(transfer.amount, targetAccount.id, sourceAccount.id, "transfer")
 	end
 end)
-
-

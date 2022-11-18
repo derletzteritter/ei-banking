@@ -23,5 +23,6 @@ EiBankingEvents = {
 	UpdateMemberPermissions = 'ei-banking:updateMemberPermissions',
 	UpdateMemberPermissionsSuccess = 'ei-banking:updateMemberPermissionsSuccess',
 	GetMembers = 'ei-banking:getMembers',
-	GetMembersSuccess = 'ei-banking:getMembersSuccess'
+	GetMembersSuccess = 'ei-banking:getMembersSuccess',
+	TransactionBroadcast = "ei-banking:transactionBroadcast"
 }
