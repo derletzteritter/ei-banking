@@ -1,20 +1,20 @@
 local function toggleNuiFrame(shouldShow)
 	SetNuiFocus(shouldShow, shouldShow)
-	SendReactMessage('setVisible', shouldShow)
+	SendReactMessage("setVisible", shouldShow)
 end
 
-RegisterCommand('show-nui', function()
+RegisterCommand("show-nui", function()
 	toggleNuiFrame(true)
-	TriggerServerEvent('ei-banking:getCredentials')
+	TriggerServerEvent("ei-banking:getCredentials")
 	TriggerServerEvent(EiBankingEvents.SyncDefaultAccount)
 end)
 
-RegisterNetEvent('ei-banking:onCredentials', function(data)
+RegisterNetEvent("ei-banking:onCredentials", function(data)
 	print(json.encode(data))
-	SendReactMessage('ei-banking:setCredentials', data)
+	SendReactMessage("ei-banking:setCredentials", data)
 end)
 
-RegisterNUICallback('hideFrame', function(_, cb)
+RegisterNUICallback("hideFrame", function(_, cb)
 	toggleNuiFrame(false)
 	cb({})
 end)
@@ -41,7 +41,7 @@ RegisterNUICallback(EiBankingEvents.DepositMoney, function(data, cb)
 	TriggerServerEvent(EiBankingEvents.DepositMoney, data)
 
 	RegisterNetEvent(EiBankingEvents.DepositMoneySuccess, function(newBalance)
-		cb({ status = 'ok', data = newBalance })
+		cb({ status = "ok", data = newBalance })
 	end)
 end)
 
@@ -49,7 +49,7 @@ RegisterNUICallback(EiBankingEvents.WithdrawMoney, function(data, cb)
 	TriggerServerEvent(EiBankingEvents.WithdrawMoney, data)
 
 	RegisterNetEvent(EiBankingEvents.WithdrawMoneySuccess, function(newBalance)
-		cb({ status = 'ok', data = newBalance })
+		cb({ status = "ok", data = newBalance })
 	end)
 end)
 
@@ -63,7 +63,7 @@ RegisterNUICallback(EiBankingEvents.TransferMoney, function(data, cb)
 	TriggerServerEvent(EiBankingEvents.TransferMoney, data)
 
 	RegisterNetEvent(EiBankingEvents.TransferMoneySuccess, function(data)
-		cb({ status = 'ok', data = data })
+		cb({ status = "ok", data = data })
 	end)
 
 	RegisterNetEvent(EiBankingEvents.TransferMoneyFailed, function(data)
@@ -98,7 +98,7 @@ RegisterNUICallback(EiBankingEvents.GetMembers, function(data, cb)
 	TriggerServerEvent(EiBankingEvents.GetMembers, data)
 
 	RegisterNetEvent(EiBankingEvents.GetMembersSuccess, function(members)
-		cb({ status = 'ok', data = members })
+		cb({ status = "ok", data = members })
 	end)
 end)
 
@@ -112,8 +112,7 @@ end)
 
 RegisterNUICallback(EiBankingEvents.RemoveMember, function(data, cb)
 	TriggerServerEvent(EiBankingEvents.RemoveMember, data)
-	
-	
+
 	RegisterNetEvent(EiBankingEvents.RemoveMemberSuccess, function(removedMember)
 		cb({ status = "ok", data = removedMember })
 	end)
@@ -121,5 +120,13 @@ end)
 
 RegisterNetEvent(EiBankingEvents.AddMemberBroadcast, function(data)
 	print("new account", json.encode(data))
-	SendReactMessage(EiBankingEvents.AddMemberBroadcast, data)	
+	SendReactMessage(EiBankingEvents.AddMemberBroadcast, data)
+end)
+
+RegisterNUICallback(EiBankingEvents.GetTransactions, function(data, cb)
+	TriggerServerEvent(EiBankingEvents.GetTransactions, data)
+
+	RegisterNetEvent(EiBankingEvents.GetTransactionsSuccess, function(data)
+		cb({ status = "ok", data = data })
+	end)
 end)

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Paper,
@@ -10,6 +10,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { useActiveAccountValue } from "../Accounts/state/accounts.state";
 
 function createData(
   name: string,
@@ -20,15 +21,10 @@ function createData(
   return { name, calories, fat, carbs };
 }
 
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24),
-  createData("Ice cream sandwich", 237, 9.0, 37),
-  createData("Eclair", 262, 16.0, 24),
-  createData("Cupcake", 305, 3.7, 67),
-  createData("Gingerbread", 356, 16.0, 49),
-];
-
 export const TransactionTable = () => {
+  const activeAccount = useActiveAccountValue();
+  const [transactions, setTransactions] = useState(null);
+
   return (
     <Box ml={2} mt={2} mr={2}>
       <Typography variant="h5" color="white" fontWeight={500}>
@@ -47,21 +43,25 @@ export const TransactionTable = () => {
               <TableCell align="right">Date</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow
-                key={row.name}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell align="right">{row.calories}</TableCell>
-                <TableCell align="right">{row.fat}</TableCell>
-                <TableCell align="right">{row.carbs}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+
+          {transactions ? (
+            <TableBody>
+              {transactions &&
+                transactions.map((row: any) => (
+                  <TableRow
+                    key={row.name}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {row.accountName}
+                    </TableCell>
+                    <TableCell align="right">{row.amount}</TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          ) : (
+            <p style={{ paddingLeft: 15 }}>No transactions yet</p>
+          )}
         </Table>
       </TableContainer>
     </Box>
