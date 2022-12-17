@@ -27,5 +27,6 @@ shared_scripts {
 
 files {
   'web/build/index.html',
-  'web/build/**/*'
+  'web/build/**/*',
+  'locale.json',
 }

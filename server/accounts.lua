@@ -312,8 +312,10 @@ AddEventHandler(EiBankingEvents.TransferMoney, function(transfer)
 end)
 
 RegisterNetEvent(EiBankingEvents.GetTransactions, function(accountId)
+	print("Trying to get transactions with id", accountId)
 	local src = source
 	local transactions = GetAllTransactions(accountId)
+	print("Found transactions", json.encode(transactions))
 
 	TriggerClientEvent(EiBankingEvents.GetTransactionsSuccess, src, transactions)
 end)

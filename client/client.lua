@@ -3,7 +3,7 @@ local function toggleNuiFrame(shouldShow)
 	SendReactMessage("setVisible", shouldShow)
 end
 
-RegisterCommand("show-nui", function()
+RegisterCommand("bank", function()
 	toggleNuiFrame(true)
 	TriggerServerEvent("ei-banking:getCredentials")
 	TriggerServerEvent(EiBankingEvents.SyncDefaultAccount)
@@ -124,9 +124,11 @@ RegisterNetEvent(EiBankingEvents.AddMemberBroadcast, function(data)
 end)
 
 RegisterNUICallback(EiBankingEvents.GetTransactions, function(data, cb)
+	print("getting transactions", data)
 	TriggerServerEvent(EiBankingEvents.GetTransactions, data)
 
-	RegisterNetEvent(EiBankingEvents.GetTransactionsSuccess, function(data)
-		cb({ status = "ok", data = data })
+	RegisterNetEvent(EiBankingEvents.GetTransactionsSuccess, function(transactions)
+		print("Found transactions on client", json.encode(transactions))
+		cb({ status = "ok", data = transactions })
 	end)
 end)

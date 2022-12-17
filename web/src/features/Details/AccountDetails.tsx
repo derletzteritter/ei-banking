@@ -14,6 +14,7 @@ import WithdrawModal from "./components/WithdrawModal";
 import { Account } from "../../types/account";
 import TransferModal from "./components/TransferModal";
 import SettingsModal from "./components/Settings/SettingsModal";
+import { useTranslation } from "react-i18next";
 
 const AccountDetails: React.FC = () => {
   const activeAccount = useActiveAccountValue();
@@ -22,6 +23,7 @@ const AccountDetails: React.FC = () => {
   const { depositMoney, withdrawMoney, transferMoney } = useAccountsApi();
   const [transferModal, setTransferModal] = useTransferModal();
   const [settingsModal, setSettingsModal] = useSettingsModal();
+  const [t] = useTranslation()
 
   if (!activeAccount) {
     return <CircularProgress />;
@@ -103,7 +105,7 @@ const AccountDetails: React.FC = () => {
             variant="contained"
             endIcon={detailsIcons.deposit}
           >
-            Deposit
+            {t("DEPOSIT_MODAL_TITLE")}
           </Button>
           <Button
             onClick={openWithdrawModal}
@@ -111,7 +113,7 @@ const AccountDetails: React.FC = () => {
             variant="contained"
             endIcon={detailsIcons.withdraw}
           >
-            Withdraw
+            {t("WITHDRAW_MODAL_TITLE")}
           </Button>
           <Button
             onClick={openTransferModal}
@@ -119,7 +121,7 @@ const AccountDetails: React.FC = () => {
             variant="contained"
             endIcon={detailsIcons.transfer}
           >
-            Transfer
+            {t("TRANSFER_MODEL_TITLE")}
           </Button>
         </Stack>
       </Box>

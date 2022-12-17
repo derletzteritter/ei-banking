@@ -4,11 +4,14 @@ import AccountMembers from '../../../Members/AccountMembers';
 import { AddMemberModal } from "../AddMemberModal";
 import { useMemberAPI } from "../../../Members/hooks/useMemberAPI";
 import { useActiveAccountValue } from "../../../Accounts/state/accounts.state";
+import { useTranslation } from 'react-i18next';
 
 const PermissionPanel: React.FC = () => {
 	const [memberModal, setMemberModal] = useState<boolean>(false);
 	const { createAccountMember } = useMemberAPI();
 	const activeAccount = useActiveAccountValue();
+
+	const [t] = useTranslation();
 	
 	const handleOpenMemberModal = () => {
 		setMemberModal(true);
@@ -23,7 +26,7 @@ const PermissionPanel: React.FC = () => {
 		<Box>
 			<Box mb={2}>
 				<Button size="small" variant="contained" onClick={handleOpenMemberModal}>
-					Add member
+					{t("ADD_MEMBER")}
 				</Button>
 			</Box>
 			<AddMemberModal open={memberModal} onClose={() => setMemberModal(false)} confirmMember={handleConfirmMember} />

@@ -11,24 +11,40 @@ import {
   Typography,
 } from "@mui/material";
 import { useActiveAccountValue } from "../Accounts/state/accounts.state";
+import { fetchNui } from "../../utils/fetchNui";
+import { useTranslation } from "react-i18next";
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number
-) {
-  return { name, calories, fat, carbs };
+type TransactionProp = {
+  id: number;
+  fromAccount: number;
+  toAccount: number;
+  type: 'deposit';
+  amount: number;
+  createdAt: string;
 }
 
 export const TransactionTable = () => {
   const activeAccount = useActiveAccountValue();
-  const [transactions, setTransactions] = useState(null);
+  const [transactions, setTransactions] = useState<TransactionProp[]>(null);
+  const [t] = useTranslation();
+
+  useEffect(() => {
+    if (activeAccount) {
+      fetchNui('ei-banking:getTransactions', activeAccount.id).then((res) => {
+        if (res.status !== 'ok') {
+          console.error("Failed to get transactions");
+          return;
+        }
+  
+        setTransactions(res.data);
+      })
+    }
+  }, [activeAccount]);
 
   return (
     <Box ml={2} mt={2} mr={2}>
       <Typography variant="h5" color="white" fontWeight={500}>
-        Transactions
+        {t("TRANSACTIONS")}
       </Typography>
       <TableContainer
         component={Paper}
@@ -37,30 +53,32 @@ export const TransactionTable = () => {
         <Table sx={{ minWidth: 650 }}>
           <TableHead>
             <TableRow>
-              <TableCell>Amount</TableCell>
-              <TableCell align="right">To</TableCell>
-              <TableCell align="right">From</TableCell>
-              <TableCell align="right">Date</TableCell>
+              <TableCell>{t("TRANSACTION_AMOUNT")}</TableCell>
+              <TableCell align="left">{t("TRANSACTION_TYPE")}</TableCell>
+              <TableCell align="left">{t("TRANSACTION_TO")}</TableCell>
+              <TableCell align="left">{t("TRANSACTION_FROM")}</TableCell>
             </TableRow>
           </TableHead>
 
           {transactions ? (
             <TableBody>
-              {transactions &&
-                transactions.map((row: any) => (
+              {transactions.length > 0 &&
+                transactions.map((row) => (
                   <TableRow
-                    key={row.name}
+                    key={row.id}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
-                      {row.accountName}
+                      {row.amount}
                     </TableCell>
-                    <TableCell align="right">{row.amount}</TableCell>
+                    <TableCell align="left">{row.type}</TableCell>
+                    <TableCell align="left">{row.toAccount}</TableCell>
+                    <TableCell align="left">{row.fromAccount}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>
           ) : (
-            <p style={{ paddingLeft: 15 }}>No transactions yet</p>
+            <p style={{ paddingLeft: 15 }}>{t("NO_TRANSACTIONS")}</p>
           )}
         </Table>
       </TableContainer>

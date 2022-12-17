@@ -16,7 +16,7 @@ end
 
 function GetAllTransactions(accountId)
 	local result =
-		MySQL.query.await("SELECT * FROM custom_bank_accounts_transactions WHERE accountId = ? LIMIT 10", { accountId })
+		MySQL.query.await("SELECT * FROM custom_bank_accounts_transactions WHERE toAccount = ? OR fromAccount = ?", { accountId, accountId })
 
 	return result
 end

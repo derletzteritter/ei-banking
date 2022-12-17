@@ -4,6 +4,7 @@ import { Box, styled, IconButton } from "@mui/material";
 import { useActiveAccountValue } from "../state/accounts.state";
 import { detailsIcons } from "../../../icons/svgProvider";
 import { useSetSettingsModal } from "../../Details/state/modal.state";
+import { useTranslation } from "react-i18next";
 
 const ItemWrapper = styled(Box)<{ selected: boolean }>(({ selected }) => ({
   background: "#42464A",
@@ -55,6 +56,7 @@ const AccountItem: React.FC<AccountItemProps> = ({
 }) => {
   const activeAccount = useActiveAccountValue();
   const setSettingsModal = useSetSettingsModal();
+  const [t] = useTranslation();
 
   return (
     <ItemWrapper
@@ -70,7 +72,7 @@ const AccountItem: React.FC<AccountItemProps> = ({
         }}
       >
         <PrimaryText>{account.accountName}</PrimaryText>
-        <TypeText>{account.type}</TypeText>
+        <TypeText>{account.type === "personal" ? t("PERSONAL_ACCOUNT_TYPE") : t("SHARED_ACCOUNT_TYPE")}</TypeText>
       </Box>
       <Box
         style={{

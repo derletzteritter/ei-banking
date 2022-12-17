@@ -4,6 +4,7 @@ import { debugData } from "../../utils/debugData";
 import { useCredentialsValue } from "../../state/player.state";
 import { headerIcons } from "../../icons/svgProvider";
 import { useVisibilityAPI } from "../../hooks/useVisibilityAPI";
+import { useTranslation } from "react-i18next";
 
 const Header = styled(Box)({
   marginTop: 20,
@@ -27,6 +28,7 @@ debugData([
 const SidebarHeader: React.FC = () => {
   const player = useCredentialsValue();
   const { exitNui } = useVisibilityAPI();
+  const [t] = useTranslation();
 
   if (!player) {
     return <CircularProgress />;
@@ -40,7 +42,7 @@ const SidebarHeader: React.FC = () => {
         size="small"
         endIcon={headerIcons.exit}
       >
-        Logout
+        {t("LOGOUT")}
       </Button>
     </Header>
   );

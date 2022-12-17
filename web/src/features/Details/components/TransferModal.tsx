@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { Account } from "../../../types/account";
 import { useAccountsValue, useActiveAccountValue } from "../../Accounts/state/accounts.state";
+import { useTranslation } from "react-i18next";
 
 interface TransferModalProps {
   open: boolean;
@@ -23,6 +24,7 @@ const TransferModal: React.FC<TransferModalProps> = ({ open, onClose, confirmTra
   const [amount, setAmount] = useState('');
   const [account, setAccount] = useState<Account | string>(null);
   const accounts = useAccountsValue();
+  const [t] = useTranslation();
   
   const activeAccount = useActiveAccountValue();
   
@@ -35,9 +37,9 @@ const TransferModal: React.FC<TransferModalProps> = ({ open, onClose, confirmTra
   
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth={true}>
-      <DialogTitle>Transfer</DialogTitle>
+      <DialogTitle>{t("TRANSFER_MODEL_TITLE")}</DialogTitle>
       <DialogContent>
-        <DialogContentText>Transer money to an account from <span
+        <DialogContentText>{t("TRANSFER_MONEY_TO")}{' '}<span
           style={{ fontWeight: 'bold' }}>{activeAccount?.accountName}</span></DialogContentText>
         <Autocomplete
           freeSolo
@@ -52,15 +54,15 @@ const TransferModal: React.FC<TransferModalProps> = ({ open, onClose, confirmTra
           onChange={(e) => setAmount(e.currentTarget.value)}
           margin="dense"
           id="name"
-          label="Amount"
+          label={t("AMOUNT")}
           type="number"
           fullWidth
           variant="standard"
         />
       </DialogContent>
       <DialogActions>
-        <Button variant="outlined" onClick={onClose}>Cancel</Button>
-        <Button variant="contained" onClick={handleTransfer} disabled={isDisabled}>Confirm</Button>
+        <Button variant="outlined" onClick={onClose}>{t("CANCEL")}</Button>
+        <Button variant="contained" onClick={handleTransfer} disabled={isDisabled}>{t("CONFIRM")}</Button>
       </DialogActions>
     </Dialog>
   )

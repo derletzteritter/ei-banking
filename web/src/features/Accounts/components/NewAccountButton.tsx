@@ -1,12 +1,15 @@
 import React from 'react'
 import { Box, Button } from "@mui/material";
 import { headerIcons } from "../../../icons/svgProvider";
+import { useTranslation } from 'react-i18next';
 
 interface NewAccountButtonProps {
 	onClick: () => void;
 }
 
 const NewAccountButton: React.FC<NewAccountButtonProps> = ({ onClick }) => {
+	const [t] = useTranslation();
+
 	return (
 		<Box
 			style={{
@@ -20,7 +23,7 @@ const NewAccountButton: React.FC<NewAccountButtonProps> = ({ onClick }) => {
 				size="small"
 				variant="contained"
 			>
-				New account
+				{t("NEW_ACCOUNT")}
 			</Button>
 		</Box>
 	)

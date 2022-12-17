@@ -9,6 +9,12 @@ module.exports = {
         webpackConfig.output.path = path.join(__dirname, 'build')
       }
 
+      const scopePluginIndex = webpackConfig.resolve.plugins.findIndex(
+        ({ constructor }) => constructor && constructor.name === 'ModuleScopePlugin'
+      );
+
+      webpackConfig.resolve.plugins.splice(scopePluginIndex, 1);
+
       return webpackConfig
     }
   },

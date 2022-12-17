@@ -8,6 +8,7 @@ import {
   Button,
 } from "@mui/material";
 import { useActiveAccountValue } from "../Accounts/state/accounts.state";
+import { useTranslation } from "react-i18next";
 
 interface MemberProps {
   member: any;
@@ -20,6 +21,8 @@ const Member: React.FC<MemberProps> = ({ member, updateMember, deleteMember }) =
     const [canWithdraw, setCanWithdraw] = useState(member.canWithdraw);
     const [canTransfer, setCanTransfer] = useState(member.canTransfer);
     const account = useActiveAccountValue()
+
+    const [t] = useTranslation();
 
     const handleUpdate = () => {
         const data = { canDeposit, canWithdraw, canTransfer, memberId: member.citizenId, accountId: account.id }
@@ -45,10 +48,10 @@ const Member: React.FC<MemberProps> = ({ member, updateMember, deleteMember }) =
         </Typography>
         <Box mt={1}>
           <Button onClick={handleUpdate} size="small" variant="outlined">
-            Update
+            {t("UPDATE")}
           </Button>
           <Button onClick={handleDelete} size="small" variant="outlined">
-            Delete 
+            {t("DELETE")}
           </Button>
         </Box>
       </Box>
@@ -60,9 +63,9 @@ const Member: React.FC<MemberProps> = ({ member, updateMember, deleteMember }) =
             flexDirection: "row",
           }}
         >
-          <FormControlLabel control={<Checkbox onChange={(e) => setCanDeposit(e.target.checked)} checked={canDeposit} />} label="Deposit" />
-          <FormControlLabel control={<Checkbox onChange={(e) => setCanWithdraw(e.target.checked)} checked={canWithdraw} />} label="Withdraw" />
-          <FormControlLabel control={<Checkbox onChange={(e) => setCanTransfer(e.target.checked)} checked={canTransfer} />} label="Transfer" />
+          <FormControlLabel control={<Checkbox onChange={(e) => setCanDeposit(e.target.checked)} checked={canDeposit} />} label={t("MEMBER_UPDATE_DEPOSIT")} />
+          <FormControlLabel control={<Checkbox onChange={(e) => setCanWithdraw(e.target.checked)} checked={canWithdraw} />} label={t("MEMBER_UPDATE_WITHDRAW")}/>
+          <FormControlLabel control={<Checkbox onChange={(e) => setCanTransfer(e.target.checked)} checked={canTransfer} />} label={t("MEMBER_UPDATE_TRANSFER")} />
         </FormGroup>
       </Box>
     </Box>

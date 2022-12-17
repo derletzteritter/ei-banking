@@ -1,27 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import { RecoilRoot } from "recoil";
-import { ThemeProvider } from "@mui/material";
-import theme from "./theme/theme";
-import { SnackbarProvider } from "notistack";
+import { init } from './i18next';
+
+const LazyComponent = React.lazy(async () => {	
+	try {
+		const res = await fetch(`https://cfx-nui-ei-banking/locale.json`)
+		const translation = await res.json()
+		console.log("translation", translation)
+	
+		await init(translation);
+	} catch(err) {
+		console.log(err);
+		await init({})
+	}
+
+	return import('./Appcomp');
+})
 
 ReactDOM.render(
 	<React.StrictMode>
-		<RecoilRoot>
-			<ThemeProvider theme={theme}>
-				<SnackbarProvider
-					autoHideDuration={4000}
-					anchorOrigin={{
-						horizontal: "left",
-						vertical: "bottom"
-					}}
-				>
-					<App/>
-				</SnackbarProvider>
-			</ThemeProvider>
-		</RecoilRoot>
+		<React.Suspense fallback={<p>Loading...</p>}>
+			<LazyComponent />
+		</React.Suspense>
 	</React.StrictMode>,
 	document.getElementById('root')
 );

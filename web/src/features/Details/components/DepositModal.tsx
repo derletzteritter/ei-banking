@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
 import { useActiveAccountValue } from "../../Accounts/state/accounts.state";
+import { useTranslation } from 'react-i18next';
 
 interface DepositModalProps {
 	open: boolean;
@@ -11,14 +12,15 @@ interface DepositModalProps {
 const DepositModal: React.FC<DepositModalProps> = ({ open, onClose, confirmDeposit }) => {
 	const [amount, setAmount] = useState<string>('')
 	const activeAccount = useActiveAccountValue();
+	const [t] = useTranslation();
 	
 	const isDisabled = !amount || amount.startsWith('0');
 	
 	return (
 		<Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth={true}>
-			<DialogTitle>Deposit</DialogTitle>
+			<DialogTitle>{t("DEPOSIT_MODAL_TITLE")}</DialogTitle>
 			<DialogContent>
-				<DialogContentText>Deposit money to <span
+				<DialogContentText>{t("DEPOSIT_MONEY_TO")}{' '}<span
 					style={{ fontWeight: 'bold' }}>{activeAccount?.accountName}</span></DialogContentText>
 				<TextField
 					autoFocus
@@ -26,15 +28,15 @@ const DepositModal: React.FC<DepositModalProps> = ({ open, onClose, confirmDepos
 					onChange={(e) => setAmount(e.currentTarget.value)}
 					margin="dense"
 					id="name"
-					label="Amount"
+					label={t("AMOUNT")}
 					type="number"
 					fullWidth
 					variant="standard"
 				/>
 			</DialogContent>
 			<DialogActions>
-				<Button variant="outlined" onClick={onClose}>Cancel</Button>
-				<Button variant="contained" onClick={() => confirmDeposit(amount)} disabled={isDisabled}>Confirm</Button>
+				<Button variant="outlined" onClick={onClose}>{t("CANCEL")}</Button>
+				<Button variant="contained" onClick={() => confirmDeposit(amount)} disabled={isDisabled}>{t("CONFIRM")}</Button>
 			</DialogActions>
 		</Dialog>
 	)
