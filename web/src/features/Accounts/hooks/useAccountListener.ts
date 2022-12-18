@@ -1,11 +1,13 @@
-import { useSetAccounts } from "../state/accounts.state";
+import { useAccountsValue, useSetAccounts, useSetActiveAccount } from "../state/accounts.state";
 import { useNuiEvent } from "../../../hooks/useNuiEvent";
 import { Account } from "../../../types/account";
 import { useAccountsActions } from "./useAccountsActions";
 
 export const useAccountListener = () => {
 	const setAccounts = useSetAccounts();
-	const { updateAccountBalance, createLocalAccount } = useAccountsActions();
+	const setActiveAccount = useSetActiveAccount();
+	const accounts = useAccountsValue();
+	const { updateAccountBalance, createLocalAccount, deleteLocalAccount } = useAccountsActions();
 	
 	useNuiEvent("SyncDefaultAccount", (newBalance) => {
 		// eslint-disable-next-line array-callback-return
@@ -26,7 +28,15 @@ export const useAccountListener = () => {
 	})
 	
 	useNuiEvent('ei-banking:addMemberBroadcast', (account) => {
-		console.log("HELLO NEW ACCOUNT", account)
 		createLocalAccount(account)
+	})
+
+	useNuiEvent('ei-banking:deleteAccountSuccess', (accountId) => {
+		deleteLocalAccount(accountId);
+		setActiveAccount(accounts[0]);
+	})
+
+	useNuiEvent('ei-banking:sendAccounts', (accounts) => {
+		setAccounts(accounts)
 	})
 }

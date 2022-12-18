@@ -11,8 +11,16 @@ export const useAccountsApi = () => {
 	
 	const createAccount = (name: string) => {
 		fetchNui('ei-banking:createAccount', { name }).then((res) => {
-			console.log('new account', res)
 			createLocalAccount(res)
+		})
+	}
+
+	const deleteAccount = (accountId: number) => {
+		fetchNui('ei-banking:deleteAccount', accountId).then((res) => {
+			if (res.status !== 'ok') {
+				console.log("Failed to delete account");
+				return;
+			}
 		})
 	}
 	
@@ -33,7 +41,6 @@ export const useAccountsApi = () => {
 	}
 	
 	const withdrawMoney = (account: Account, amount: string) => {
-		console.log('withdrawMoney account', account)
 		fetchNui('ei-banking:withdrawMoney', {
 			account,
 			amount: parseInt(amount, 10)
@@ -81,6 +88,7 @@ export const useAccountsApi = () => {
 		createAccount,
 		depositMoney,
 		withdrawMoney,
-		transferMoney
+		transferMoney,
+		deleteAccount
 	}
 }

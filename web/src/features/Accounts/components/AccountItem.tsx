@@ -83,7 +83,7 @@ const AccountItem: React.FC<AccountItemProps> = ({
         }}
       >
         <SecondaryText>{account.balance}</SecondaryText>
-        {account.type === "personal" && (
+        {account.type === "personal" && !account.isDefault && (
           <IconButton
             onClick={() => setSettingsModal(true)}
             style={{ color: "#ddd" }}

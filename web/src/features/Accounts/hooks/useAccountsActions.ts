@@ -7,6 +7,7 @@ interface IUseAccountActions {
 	findAccountById: (id: string) => Account | null;
 	getDefaultAccount: () => Account;
 	createLocalAccount: (account: Account) => void;
+	deleteLocalAccount: (accountId: number) => void;
 	updateAccountBalance: (accountId: number, newBalance: number) => void;
 }
 
@@ -48,6 +49,10 @@ export const useAccountsActions = (): IUseAccountActions => {
 	const createLocalAccount = useCallback((account: Account) => {
 		setAccounts((curAcc) => [...curAcc, account])
 	}, [setAccounts])
+
+	const deleteLocalAccount = useCallback((accountId: number) => {
+		setAccounts((curAcc) => [...curAcc].filter((acc) => acc.id !== accountId));
+	}, [setAccounts])
 	
 	const updateAccountBalance = (accountId: number, newBalance: number) => {
 		setAccounts((curAcc: Account[]) => curAcc.map((acc) => {
@@ -62,5 +67,5 @@ export const useAccountsActions = (): IUseAccountActions => {
 		}))
 	}
 	
-	return { findAccountById, getDefaultAccount, createLocalAccount, updateAccountBalance };
+	return { findAccountById, getDefaultAccount, createLocalAccount, updateAccountBalance, deleteLocalAccount };
 };

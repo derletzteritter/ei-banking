@@ -7,22 +7,7 @@ import { Account } from "../../../types/account";
 export const accountsState = {
 	accounts: atom<any[]>({
 		key: 'accountsStateAccounts',
-		default: selector({
-			key: 'accountsStateAccountsValue',
-			get: async () => {
-				try {
-					const res: any = await fetchNui<{ data: any[] }>('ei-banking:getAccounts');
-					
-					return res;
-				} catch (e) {
-					if (isEnvBrowser()) {
-						return MockAccounts;
-					}
-					console.error(e);
-					return [];
-				}
-			}
-		})
+		default: []
 	}),
 	filterInput: atom<string>({
 		key: 'defaultAccountsFilter',

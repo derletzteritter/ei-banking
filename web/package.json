@@ -16,6 +16,7 @@
     "@types/node": "^16.11.18",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
+    "dayjs": "^1.11.7",
     "i18next": "^22.4.5",
     "notistack": "^2.0.3",
     "react": "^17.0.2",

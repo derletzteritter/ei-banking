@@ -50,14 +50,11 @@ export const useMemberAPI = () => {
 	}
 	
 	const getMembers = useCallback((accountId) => {
-		console.log("fetching that bitch")
-		console.log("accountid", accountId);
 		fetchNui('ei-banking:getMembers', { accountId }).then((res) => {
 			if (res.status !== 'ok') {
 				return;
 			}
 			
-			console.log("HELLO BRO", res.data);
 			setMembers(res.data);
 		})
 	}, [setMembers])

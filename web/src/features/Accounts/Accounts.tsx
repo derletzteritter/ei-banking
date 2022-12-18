@@ -45,10 +45,12 @@ const Accounts: React.FC = () => {
         <SidebarHeader />
         <NewAccountButton onClick={toggleAccountModal} />
         <AccountsSearch />
-        <AccountsList
-          accounts={accounts}
-          handleChangeAccount={handleChangeAccounts}
-        />
+        <React.Suspense fallback={<CircularProgress />}>
+          <AccountsList
+            accounts={accounts}
+            handleChangeAccount={handleChangeAccounts}
+          />
+        </React.Suspense>
       </React.Suspense>
     </Box>
   );

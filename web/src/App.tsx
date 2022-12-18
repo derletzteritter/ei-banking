@@ -44,8 +44,11 @@ const App: React.FC = () => {
               <Grid item sm={7} md={8} lg={9}>
                 <React.Suspense fallback={<CircularProgress />}>
                   <AccountDetails />
+                </React.Suspense> 
+                <React.Suspense fallback={<CircularProgress />}>
+                  <TransactionTable />
                 </React.Suspense>
-                <TransactionTable />
+              
               </Grid>
             </Grid>
           </BankContainer>

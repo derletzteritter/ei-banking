@@ -7,7 +7,6 @@ const LazyComponent = React.lazy(async () => {
 	try {
 		const res = await fetch(`https://cfx-nui-ei-banking/locale.json`)
 		const translation = await res.json()
-		console.log("translation", translation)
 	
 		await init(translation);
 	} catch(err) {

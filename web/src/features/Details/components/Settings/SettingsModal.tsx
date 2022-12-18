@@ -3,6 +3,8 @@ import { Box, Button, Dialog, DialogContent, DialogContentText, Tab, Typography 
 import { TabList, TabPanel, TabContext } from '@mui/lab'
 import PermissionPanel from './PermissionPanel';
 import { useTranslation } from 'react-i18next';
+import { useAccountsApi } from '../../../Accounts/hooks/useAccountsApi';
+import { useActiveAccountValue } from '../../../Accounts/state/accounts.state';
 
 interface SettingsModalProps {
 	open: boolean;
@@ -14,8 +16,17 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
   const handleTabChange = (e: React.SyntheticEvent, newValue: string) => {
     setTabValue(newValue);
   }
+  const activeAccount = useActiveAccountValue();
+  const { deleteAccount } = useAccountsApi();
 
   const [t] = useTranslation()
+
+  const handleDeleteAccount = () => {
+    deleteAccount(activeAccount.id);
+    onClose();
+  }
+
+  const canDelete = activeAccount.balance == "0";
 
 	return (
 		<Dialog open={open} onClose={onClose} maxWidth="md" fullWidth={true}>
@@ -32,7 +43,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
           <TabPanel value="2">
 	          <Box>
 		          <Typography>{t("DANGER_ZONE")}</Typography>
-	            <Button style={{ marginTop: 10 }} variant="outlined">
+	            <Button style={{ marginTop: 10 }} onClick={handleDeleteAccount} variant="outlined">
 		            {t("DELETE")}
 	            </Button>
 	          </Box>
